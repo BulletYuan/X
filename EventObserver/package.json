@@ -1,0 +1,25 @@
+{
+  "name": "bullet-events",
+  "version": "2.0.0",
+  "description": "javascript 事件系统，用于实现发布订阅模式",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BulletYuan/bulletEvents.git"
+  },
+  "keywords": [
+    "js",
+    "bullet-events",
+    "publish-subscription",
+    "发布订阅"
+  ],
+  "author": "bullet.Y",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BulletYuan/bulletEvents/issues"
+  },
+  "homepage": "https://github.com/BulletYuan/bulletEvents#readme"
+}
