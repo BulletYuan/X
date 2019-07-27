@@ -1,0 +1,22 @@
+{
+  "name": "color-data",
+  "version": "0.0.33",
+  "description": "使用Canvas/SVG完成Json数据转换为拓扑图和流程图的插件",
+  "keywords": [
+    "cavnas",
+    "svg",
+    "json",
+    "拓扑图",
+    "流程图",
+    "图表",
+    "topological graph",
+    "flow chart",
+    "chart"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bullet.Y",
+  "license": "ISC"
+}
