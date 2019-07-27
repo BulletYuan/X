@@ -1,0 +1,27 @@
+{
+  "name": "bullet-jdb",
+  "version": "2.0.2",
+  "description": "json store",
+  "main": "core.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "typings": "bullet-jdb.d.ts",
+  "keywords": [
+    "json",
+    "database",
+    "store",
+    "no-sql"
+  ],
+  "author": "bullet.Y",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BulletYuan/bulletJDB.git/"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
