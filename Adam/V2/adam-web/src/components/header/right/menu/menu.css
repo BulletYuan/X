@@ -1,0 +1,12 @@
+#CPT-right-menu {
+  width: 30px;
+  height: 30px;
+  line-height: 28px;
+  border: 1px #dedede solid;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+#CPT-right-menu > span.btn {
+  font-size: 12px;
+}

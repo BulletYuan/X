@@ -1,0 +1,23 @@
+<div class="hold-transition login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <a routerLink="/"><b>Adam</b>管理系统</a>
+    </div>
+    <div class="login-box-body">
+      <div class="form-group has-feedback">
+        <input type="text" class="form-control" [(ngModel)]="loginName" (keyup.enter)="login()" maxlength="11" placeholder="网易云手机号" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+      </div>
+      <div class="form-group has-feedback">
+        <input type="password" class="form-control" [(ngModel)]="loginPwd" (keyup.enter)="login()" placeholder="密码">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-primary btn-block btn-flat" (click)="login()">登 录</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

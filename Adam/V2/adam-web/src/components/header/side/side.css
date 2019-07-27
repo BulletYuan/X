@@ -1,0 +1,45 @@
+#CPT-header-side {
+  width: 60%;
+  max-width: 320px;
+  height: 100%;
+  position: fixed;
+  z-index: 100;
+  background-color: #fff;
+  top: 0;
+}
+
+#CPT-header-side.left.hideAni {
+  left: -70%;
+}
+#CPT-header-side.right.hideAni {
+  right: -70%;
+}
+
+#CPT-header-side.left {
+  left: 0;
+  box-shadow: 1px 0 8px rgba(0, 0, 0, 0.33);
+}
+#CPT-header-side.right {
+  right: 0;
+  box-shadow: -1px 0 8px rgba(0, 0, 0, 0.33);
+}
+
+#CPT-header-side > p {
+  height: 60px;
+  line-height: 60px;
+  font-size: 18px;
+  padding: 0 20px;
+  border-bottom: 1px #ededed solid;
+}
+#CPT-header-side.left > p.close-bar {
+  text-align: right;
+}
+#CPT-header-side.right > p.close-bar {
+  text-align: left;
+}
+#CPT-header-side > p.close-bar > span {
+  cursor: pointer;
+}
+#CPT-header-side > p.close-bar > span:hover {
+  transform: rotate(180deg);
+}

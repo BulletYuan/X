@@ -1,0 +1,22 @@
+:host {
+    display: block;
+}
+
+.sidebar-right-toggle {
+    float: right;
+}
+
+.sidebar-right-toggle a {
+    padding: 15px;
+    display: block;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.main-header .sidebar-toggle {
+    font-family: 'Glyphicons Halflings';
+}
+
+.main-header .sidebar-toggle:before {
+    content: "\e236";
+}

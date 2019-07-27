@@ -1,0 +1,26 @@
+{
+  "songs": [
+    {
+      "songId": 10001,
+      "songName": "Another Love",
+      "songUrl": "https://aud.music.joox.com/ajoox.tc.qq.com/1081_ca5210ea3ea211e7bd46487b6bad2e11.f1120.m4a",
+      "songPoster": "https://imgcache.joox.com/music/joox/photo_hk/mid_album_1000/2/0/14296b21e9b08db121940fe1b96d3120.jpg",
+      "songThumb": "Long Way Down",
+      "songSum": "all my tears have been used up on another love.",
+      "singerId": 1001,
+      "singerName": "Tom Odell",
+      "kindId": "1,3"
+    },
+    {
+      "songId": 10002,
+      "songName": "Viva La Vida",
+      "songUrl": "https://aud.music.joox.com/ajoox.tc.qq.com/1081_4d5daa8a294911e89bf7487b6bad2e11.f1120.m4a",
+      "songPoster": "https://imgcache.joox.com/music/joox/photo/mid_album_265/7/3/d33712fe35f0a573.jpg",
+      "songThumb": "Viva La Vida Or Death And All His Friends",
+      "songSum": "Oh who would ever want to be king.",
+      "singerId": 1002,
+      "singerName": "Coldplay",
+      "kindId": "1,3"
+    }
+  ]
+}

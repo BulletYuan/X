@@ -1,0 +1,41 @@
+#CPT-body-tab-bar {
+  width: auto;
+  height: 30px;
+  display: inline-block;
+  margin: 0 auto;
+  padding: 2.5px 0;
+  background-color: #f0f0f0;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.23) inset;
+  border-radius: 80px;
+  position: relative;
+  margin-top: 40px;
+}
+#CPT-body-tab-bar > ul {
+  height: 25px;
+}
+#CPT-body-tab-bar > ul > li {
+  width: 70px;
+  height: 100%;
+  line-height: 25px;
+  margin: 0 5px;
+  text-align: center;
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-block;
+  cursor: pointer;
+}
+#CPT-body-tab-bar > ul > li.active {
+  color: #000;
+}
+#CPT-body-tab-bar > .tab-active {
+  width: 70px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.4);
+  box-shadow: -1px 1px 8px rgba(169, 36, 185, 0.33);
+  border-radius: 80px;
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  cursor: pointer;
+}
