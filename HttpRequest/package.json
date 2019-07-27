@@ -1,0 +1,19 @@
+{
+  "name": "bullet-http-request",
+  "version": "0.0.1",
+  "description": "http-request module at angular 6+ or ionic 3+",
+  "main": "index.ts",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BulletYuan/bulletHttpRequest.git"
+  },
+  "author": "bullet.Y",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BulletYuan/bulletHttpRequest/issues"
+  },
+  "homepage": "https://github.com/BulletYuan/bulletHttpRequest#readme"
+}
