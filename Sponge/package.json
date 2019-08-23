@@ -1,5 +1,5 @@
 {
-  "name": "sponge",
+  "name": "bullet-sponge",
   "version": "1.0.1",
   "description": "sponge dispatch center",
   "main": "index.js",
@@ -11,6 +11,6 @@
     "dispatch",
     "sponge"
   ],
-  "author": "bullet.Y",
+  "author": "bulletYuan",
   "license": "ISC"
 }
