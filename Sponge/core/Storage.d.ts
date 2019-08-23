@@ -1,6 +1,6 @@
 
 const Storage: object | any;
 
-export default {
+export {
     Storage,
-}
+};

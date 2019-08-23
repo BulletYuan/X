@@ -17,7 +17,7 @@ const string2obj = function (str, splitStr = ';') {
 }
 
 const getCookie = function (key = '') {
-    if (typeof document !== 'object' || !document.cookie) {
+    if (typeof document === 'object' && document.cookie) {
         const _ck = string2obj(document.cookie);
         if (key) {
             return _ck[key];
@@ -28,7 +28,7 @@ const getCookie = function (key = '') {
     throw new Error('current env unsupport cookie!');
 }
 const setCookie = function (key, value = '') {
-    if (typeof document !== 'object' || !document.cookie) {
+    if (typeof document === 'object' && document.cookie) {
         if (!key) { return false; }
         const _ck = string2obj(document.cookie);
         _ck[key] = value;
@@ -39,7 +39,7 @@ const setCookie = function (key, value = '') {
 }
 
 const getSession = function (key = '') {
-    if (typeof sessionStorage !== 'object' || !sessionStorage) {
+    if (typeof sessionStorage === 'object' && sessionStorage) {
         const _ss = sessionStorage;
         if (key) {
             return JSON.parse(_ss.getItem(key));
@@ -50,7 +50,7 @@ const getSession = function (key = '') {
     throw new Error('current env unsupport session!');
 }
 const setSession = function (key, value = '') {
-    if (typeof sessionStorage !== 'object' || !sessionStorage) {
+    if (typeof sessionStorage === 'object' && sessionStorage) {
         if (!key) { return false; }
         sessionStorage.setItem(key, value);
         return true;
@@ -59,7 +59,7 @@ const setSession = function (key, value = '') {
 }
 
 const getStorage = function (key = '') {
-    if (typeof localStorage !== 'object' || !localStorage) {
+    if (typeof localStorage === 'object' && localStorage) {
         const _ls = localStorage;
         if (key) {
             return JSON.parse(_ls.getItem(key));
@@ -70,7 +70,7 @@ const getStorage = function (key = '') {
     throw new Error('current env unsupport session!');
 }
 const setStorage = function (key, value = '') {
-    if (typeof localStorage !== 'object' || !localStorage) {
+    if (typeof localStorage === 'object' && localStorage) {
         if (!key) { return false; }
         localStorage.setItem(key, value);
         return true;
@@ -78,7 +78,7 @@ const setStorage = function (key, value = '') {
     return false;
 }
 
-const getCache = function (key = '', type = 'cookie') {
+const getCache = function (type = 'cookie', key = '') {
     switch (type) {
         case 'cookie':
             return getCookie(key);
@@ -90,7 +90,7 @@ const getCache = function (key = '', type = 'cookie') {
             return getCookie(key);
     }
 }
-const setCache = function (key = '', value = '', type = 'cookie') {
+const setCache = function (type = 'cookie', key = '', value = '') {
     switch (type) {
         case 'cookie':
             return setCookie(key, value);

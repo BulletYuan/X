@@ -1,3 +1,8 @@
+export enum CacheType {
+    cookie = 'cookie',
+    session = 'session',
+    storage = 'storage',
+}
 
 function obj2string(obj: object | any): string;
 function string2obj(str: string, splitStr?: string): object | any;
@@ -11,10 +16,10 @@ function setSession(key: string, value?: string): boolean;
 function getStorage(key?: string): object | any;
 function setStorage(key: string, value?: string): boolean;
 
-function getCache(key?: string): object | any;
-function setCache(key: string, value?: string): boolean;
+function getCache(type?: CacheType, key?: string): object | any;
+function setCache(type?: CacheType, key: string, value?: string): boolean;
 
-export default {
+export {
     getCookie,
     setCookie,
 
