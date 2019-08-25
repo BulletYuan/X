@@ -52,6 +52,7 @@ const Commit = function (key, state) {
   if (!Storage) {
     return null;
   }
+
   try {
     eval('Storage.' + key + '=' + ObjectStringify(state));
   } catch (e) {
@@ -65,9 +66,9 @@ const Pull = function (key) {
     return null;
   }
   try {
-    return eval('Storage.' + key);
+    return eval('Storage.' + key + '.call(null)');
   } catch (e) {
-    return null;
+    return null; 
   }
 }
 

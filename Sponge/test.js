@@ -1,9 +1,17 @@
 const { Intent, Cache } = require('./index');
 
-const cmt = Intent.Commit('a', {
-    a: function (a) { console.log(a); }
+const a = Intent.Commit('a', {
+  a: 3
 });
+console.log(a)
 const aFn = Intent.Pull('a.a');
-aFn && aFn(123);
+console.log(aFn)
 
-Cache.getCache('cookie');
+Intent.Commit('a1', 2);
+setTimeout(() => {
+  const a1 = Intent.Pull('a1');
+  console.log(a1);
+})
+
+
+// Cache.getCache('cookie');
