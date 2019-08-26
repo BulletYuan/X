@@ -4,9 +4,9 @@ interface StringifyAppend {
     stringifyFn: Function,
 }
 
-function ObjectStringify(obj: any, append?: StringifyAppend): string;
-function Commit(key: string, state: string | boolean | object | any): object | any;
-function Pull(key: string, seccess?: Function, error?: Function, complate?: Function): void;
+declare function ObjectStringify(obj: any, append?: StringifyAppend): string;
+declare function Commit(key: string, state: string | boolean | object | any): object | any;
+declare function Pull(key: string, seccess?: Function, error?: Function, complate?: Function): void;
 
 export {
     Commit,
