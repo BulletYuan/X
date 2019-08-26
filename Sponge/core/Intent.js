@@ -54,22 +54,31 @@ const Commit = function (key, state) {
   }
 
   try {
-    eval('Storage.' + key + '=' + ObjectStringify(state));
+    eval('Storage.' + key + '.call(null,' + ObjectStringify(state) + ')');
   } catch (e) {
     return null;
   }
   return Storage;
 };
 
-const Pull = function (key) {
+const Pull = function (key, done = res => res, error = err => err, complate = () => { }) {
   if (!Storage) {
     return null;
   }
-  try {
-    return eval('Storage.' + key + '.call(null)');
-  } catch (e) {
-    return null; 
+  Storage[key] = state => {
+    const _ts = Object.prototype.toString.call(state);
+    try {
+      if (_ts.indexOf('Function') > 0) {
+        done(state());
+      } else {
+        done(state);
+      }
+    } catch (e) {
+      error(e);
+    }
+    complate();
   }
+
 }
 
 if (typeof module !== 'undefined') {
