@@ -1,9 +1,7 @@
-let Storage;
-if (typeof require !== 'undefined') {
-  Storage = require('./Storage').Storage;
+function Sponge() {
+  this.Storage = {};
 }
-
-function ObjectStringify(obj, append = {}) {
+Sponge.prototype.ObjectStringify = function (obj, append = {}) {
   const _ts = Object.prototype.toString.call(obj);
   const _apds = Object.keys(append);
   if (_apds.length > 0) {
@@ -47,25 +45,15 @@ function ObjectStringify(obj, append = {}) {
     return obj.toString();
   }
 }
-
-const Commit = function (key, state) {
-  if (!Storage) {
-    return null;
-  }
-
+Sponge.prototype.Commit = function (key, state) {
   try {
-    eval('Storage.' + key + '.call(null,' + ObjectStringify(state) + ')');
+    this.Storage[key].call(null, this.ObjectStringify(state));
   } catch (e) {
     return null;
   }
-  return Storage;
 };
-
-const Pull = function (key, done = res => res, error = err => err, complate = () => { }) {
-  if (!Storage) {
-    return null;
-  }
-  Storage[key] = state => {
+Sponge.prototype.Pull = function (key, done = res => res, error = err => err, complate = () => { }) {
+  this.Storage[key] = state => {
     const _ts = Object.prototype.toString.call(state);
     try {
       if (_ts.indexOf('Function') > 0) {
@@ -79,11 +67,9 @@ const Pull = function (key, done = res => res, error = err => err, complate = ()
     complate();
   }
 
-}
+};
+const sponge = new Sponge();
 
 if (typeof module !== 'undefined') {
-  module.exports = {
-    Commit,
-    Pull,
-  };
+  module.exports = sponge;
 }

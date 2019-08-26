@@ -4,11 +4,13 @@ interface StringifyAppend {
     stringifyFn: Function,
 }
 
-declare function ObjectStringify(obj: any, append?: StringifyAppend): string;
-declare function Commit(key: string, state: string | boolean | object | any): object | any;
-declare function Pull(key: string, seccess?: Function, error?: Function, complate?: Function): void;
+declare class Sponge {
+    constructor(): void;
+    private Storage: object;
 
-export {
-    Commit,
-    Pull,
+    private ObjectStringify(obj: any, append?: StringifyAppend): string;
+    public Commit(key: string, state: string | boolean | object | any): void;
+    public Pull(key: string, seccess?: Function, error?: Function, complate?: Function): void;
 }
+
+export default new Sponge()
