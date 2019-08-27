@@ -27,14 +27,14 @@ Sponge.prototype.ObjectStringify = function (obj, append = {}) {
     const v = Object.keys(obj);
     for (let i = 0; i < v.length; i++) {
       const el = v[i]
-      kv += el + ':' + ObjectStringify(obj[el]) + ',';
+      kv += el + ':' + this.ObjectStringify(obj[el]) + ',';
     }
     return '{' + kv.substr(0, kv.length - 1) + '}';
   } else if (_ts.indexOf('Array') > 0) {
     let v = '';
     for (let i = 0; i < v.length; v++) {
       const el = v[i]
-      v += ObjectStringify(el) + ',';
+      v += this.ObjectStringify(el) + ',';
     }
     return '[' + v.substr(0, v.length - 1) + ']';
   } else if (_ts.indexOf('Null') > 0) {
@@ -47,13 +47,22 @@ Sponge.prototype.ObjectStringify = function (obj, append = {}) {
 }
 Sponge.prototype.Commit = function (key, state) {
   try {
-    this.Storage[key].call(null, this.ObjectStringify(state));
+    if (typeof this.Storage[key] === 'undefined') {
+      return null;
+    }
+    this.Storage[key].forEach(val => {
+      val.call(null, this.ObjectStringify(state));
+    })
   } catch (e) {
     return null;
   }
 };
 Sponge.prototype.Pull = function (key, done = res => res, error = err => err, complate = () => { }) {
-  this.Storage[key] = state => {
+
+  if (typeof this.Storage[key] === 'undefined') {
+    this.Storage[key] = [];
+  }
+  this.Storage[key].push(state => {
     const _ts = Object.prototype.toString.call(state);
     try {
       if (_ts.indexOf('Function') > 0) {
@@ -65,7 +74,7 @@ Sponge.prototype.Pull = function (key, done = res => res, error = err => err, co
       error(e);
     }
     complate();
-  }
+  });
 
 };
 const sponge = new Sponge();
