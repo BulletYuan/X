@@ -50,9 +50,15 @@ Sponge.prototype.Commit = function (key, state) {
     if (typeof this.Storage[key] === 'undefined') {
       return null;
     }
-    this.Storage[key].forEach(val => {
-      val.call(null, this.ObjectStringify(state));
-    })
+    if (typeof state === 'function') {
+      this.Storage[key].forEach(val => {
+        val.call(null, this.ObjectStringify(state));
+      })
+    } else {
+      this.Storage[key].forEach(val => {
+        val.call(null, state);
+      })
+    }
   } catch (e) {
     return null;
   }
