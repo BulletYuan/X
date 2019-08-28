@@ -48,11 +48,11 @@ Sponge.prototype.ObjectStringify = function (obj, append = {}) {
 Sponge.prototype.Commit = function (key, state) {
   try {
     if (typeof this.Storage[key] === 'undefined') {
-      return null;
+      this.Storage[key] = { state };
     }
     if (typeof state === 'function') {
       this.Storage[key].forEach(val => {
-        val.call(null, this.ObjectStringify(state));
+        val.call(null, () => state());
       })
     } else {
       this.Storage[key].forEach(val => {
@@ -66,6 +66,18 @@ Sponge.prototype.Commit = function (key, state) {
 Sponge.prototype.Pull = function (key, done = res => res, error = err => err, complate = () => { }) {
 
   if (typeof this.Storage[key] === 'undefined') {
+    this.Storage[key] = [];
+  }
+  if (Object.prototype.toString.call(this.Storage[key]).indexOf('Object') > 0) {
+    if (this.Storage[key].state !== undefined) {
+      const _ts = Object.prototype.toString.call(this.Storage[key].state);
+      if (_ts.indexOf('Function') > 0) {
+        done(this.Storage[key].state());
+      } else {
+        done(this.Storage[key].state);
+      }
+    }
+    complate();
     this.Storage[key] = [];
   }
   this.Storage[key].push(state => {
