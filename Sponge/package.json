@@ -1,6 +1,6 @@
 {
   "name": "bullet-sponge",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "sponge dispatch center",
   "main": "index.js",
   "types": "index.d.ts",
