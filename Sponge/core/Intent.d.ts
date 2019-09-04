@@ -9,7 +9,7 @@ declare class Sponge {
     private Storage: object;
 
     private ObjectStringify(obj: any, append?: StringifyAppend): string;
-    public Commit(key: string, state: string | boolean | object | any): void;
+    public Commit(key: string | Array, state: string | boolean | object | any): void;
     public Pull(key: string, seccess?: Function, error?: Function, complate?: Function): void;
 }
 
