@@ -19,7 +19,7 @@ module.exports = appInfo => {
         queryName: '_csrf', // 通过 query 传递 CSRF token 的默认字段为 _csrf
         bodyName: '_csrf', // 通过 body 传递 CSRF token 的默认字段为 _csrf
       },
-    }
+    },
   };
 
   // use for cookie sign key, should change to your own and keep security
