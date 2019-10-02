@@ -88,6 +88,11 @@ export default class Demo extends Vue {
     feed: 0,
     accident: 0,
     maxAccident: 3,
+    // records: [x,...] x = {life,satiety,emotion,health, action:a + ',' + b + ',' + c, time:timestamp}
+    // -- a [play:1|feed:2|clean:3]
+    // -- b [playItem/feedItem:item.id|clean:0]
+    // -- c if last time was simply 'a' value is 1, else is 0.
+    records: [],
     _formatNumber(num) {
       if (typeof num !== "number") {
         num = Number(num);
@@ -99,6 +104,170 @@ export default class Demo extends Vue {
     }
   };
 
+  private AccidentRandom(type = 0) {
+    const _types = ["管状", "球状", "块状", "圆状", "棍状", "袋形", "小鱼"];
+    const _acc_type = _types[type];
+    const _actions = ["误食", "追逐", "误触"];
+    const _acc_action = Math.floor(Math.random() * _actions.length);
+    const _things = ["塑料", "金属", "玻璃", "带电", "未知"];
+    const _acc_thing = Math.floor(Math.random() * _things.length);
+    const _deads = [
+      "无法消化,无法排泄",
+      "卡住呼吸管",
+      "边缘划破器官",
+      "未知原因"
+    ];
+    const _acc_dead = Math.floor(Math.random() * _deads.length);
+    const str =
+      "喵喵" +
+      _actions[_acc_action] +
+      _things[_acc_thing] +
+      _acc_type +
+      "物体,致使" +
+      _deads[_acc_dead] +
+      ",而导致死亡...";
+    return str;
+  }
+  private AccidentsRecords = [];
+  private Accident = {
+    Pipe: {
+      id: 1,
+      maxCount: 10,
+      count: 0,
+      _isOccur: id => {
+        const len = this.AccidentsRecords.length;
+        let count = 0,
+          last = len - 1;
+        const maxCount = 10;
+        for (let i = len - 1; i >= 0; i--) {
+          const item = this.AccidentsRecords[i];
+          if (last - i <= 3) {
+            if (item === id) {
+              count += 1;
+            }
+            last = i;
+          } else {
+            break;
+          }
+        }
+      },
+      content: () => {
+        this.Accident.Pipe.count += 1;
+        if (
+          this.Accident.Pipe.count >=
+          this.Accident.Pipe.maxCount + Math.ceil(Math.random() * 10)
+        ) {
+          this.Accident.Pipe.count = 0;
+          const str = this.AccidentRandom(this.Accident.Pipe.id - 1);
+          return str;
+        }
+        return "";
+      }
+    },
+    Ball: {
+      id: 2,
+      maxCount: 10,
+      count: 0,
+      content: () => {
+        this.Accident.Ball.count += 1;
+        if (
+          this.Accident.Ball.count >=
+          this.Accident.Ball.maxCount + Math.ceil(Math.random() * 10)
+        ) {
+          this.Accident.Ball.count = 0;
+          const str = this.AccidentRandom(this.Accident.Ball.id - 1);
+          return str;
+        }
+        return "";
+      }
+    },
+    Square: {
+      id: 3,
+      maxCount: 10,
+      count: 0,
+      content: () => {
+        this.Accident.Square.count += 1;
+        if (
+          this.Accident.Square.count >=
+          this.Accident.Square.maxCount + Math.ceil(Math.random() * 10)
+        ) {
+          this.Accident.Square.count = 0;
+          const str = this.AccidentRandom(this.Accident.Square.id - 1);
+          return str;
+        }
+        return "";
+      }
+    },
+    Circle: {
+      id: 4,
+      maxCount: 10,
+      count: 0,
+      content: () => {
+        this.Accident.Circle.count += 1;
+        if (
+          this.Accident.Circle.count >=
+          this.Accident.Circle.maxCount + Math.ceil(Math.random() * 10)
+        ) {
+          this.Accident.Circle.count = 0;
+          const str = this.AccidentRandom(this.Accident.Circle.id - 1);
+          return str;
+        }
+        return "";
+      }
+    },
+    Stick: {
+      id: 5,
+      maxCount: 10,
+      count: 0,
+      content: () => {
+        this.Accident.Stick.count += 1;
+        if (
+          this.Accident.Stick.count >=
+          this.Accident.Stick.maxCount + Math.ceil(Math.random() * 10)
+        ) {
+          this.Accident.Stick.count = 0;
+          const str = this.AccidentRandom(this.Accident.Stick.id - 1);
+          return str;
+        }
+        return "";
+      }
+    },
+    Packet: {
+      id: 6,
+      maxCount: 10,
+      count: 0,
+      content: () => {
+        this.Accident.Packet.count += 1;
+        if (
+          this.Accident.Packet.count >=
+          this.Accident.Packet.maxCount + Math.ceil(Math.random() * 10)
+        ) {
+          this.Accident.Packet.count = 0;
+          const str = this.AccidentRandom(this.Accident.Packet.id - 1);
+          return str;
+        }
+        return "";
+      }
+    },
+    Fish: {
+      id: 7,
+      maxCount: 10,
+      count: 0,
+      content: () => {
+        this.Accident.Fish.count += 1;
+        if (
+          this.Accident.Fish.count >=
+          this.Accident.Fish.maxCount + Math.ceil(Math.random() * 10)
+        ) {
+          this.Accident.Fish.count = 0;
+          const str = this.AccidentRandom(this.Accident.Fish.id - 1);
+          return str;
+        }
+        return "";
+      }
+    }
+  };
+
   private playedList = [
     {
       id: 1,
@@ -106,16 +275,66 @@ export default class Demo extends Vue {
       satiety: -1,
       emotion: 1,
       health: -0.5,
+      parent: this.Accident.Pipe
     },
-    { id: 2, value: "毛线团", satiety: -2, emotion: 1.2, health: -1 },
-    { id: 3, value: "轮胎", satiety: -3, emotion: 1.4, health: -1.5 },
-    { id: 4, value: "火柴", satiety: -1, emotion: 1.1, health: -0.5 }
+    {
+      id: 2,
+      value: "毛线团",
+      satiety: -2,
+      emotion: 1.2,
+      health: -1,
+      parent: this.Accident.Ball
+    },
+    {
+      id: 3,
+      value: "轮胎",
+      satiety: -3,
+      emotion: 1.4,
+      health: -1.5,
+      parent: this.Accident.Circle
+    },
+    {
+      id: 4,
+      value: "火柴",
+      satiety: -1,
+      emotion: 1.1,
+      health: -0.5,
+      parent: this.Accident.Stick
+    }
   ];
   private feedList = [
-    { id: 1, value: "球状小鱼干", satiety: 1, emotion: 0.5, health: -0.4 },
-    { id: 2, value: "鱼形小鱼干", satiety: 1, emotion: 0.6, health: -0.3 },
-    { id: 3, value: "袋装小鱼干", satiety: 2, emotion: 0.4, health: -0.2 },
-    { id: 4, value: "方块状小鱼干", satiety: 2, emotion: 0.3, health: -0.2 }
+    {
+      id: 1,
+      value: "球状小鱼干",
+      satiety: 1,
+      emotion: 0.5,
+      health: -0.4,
+      parent: this.Accident.Ball
+    },
+    {
+      id: 2,
+      value: "鱼形小鱼干",
+      satiety: 1,
+      emotion: 0.6,
+      health: -0.3,
+      parent: this.Accident.Fish
+    },
+    {
+      id: 3,
+      value: "袋装小鱼干",
+      satiety: 2,
+      emotion: 0.4,
+      health: -0.2,
+      parent: this.Accident.Packet
+    },
+    {
+      id: 4,
+      value: "方块小鱼干",
+      satiety: 2,
+      emotion: 0.3,
+      health: -0.2,
+      parent: this.Accident.Square
+    }
   ];
 
   public mounted() {
@@ -153,21 +372,52 @@ export default class Demo extends Vue {
   }
   public icu() {
     this.ICU = true;
+    let str = "";
+    const min = Math.min(
+      this.SCENE.satiety,
+      this.SCENE.emotion,
+      this.SCENE.health
+    );
+    if (this.SCENE.satiety === min) {
+      str = "喵喵快被饿死了!";
+    }
+    if (this.SCENE.emotion === min) {
+      str = "喵喵也有感情啊, 也会抑郁!";
+    }
+    if (this.SCENE.health === min) {
+      str = "喵喵太久不清理, 很容易猫瘟!";
+    }
+    this.icuContent = str;
     setTimeout(() => {
       this.cancelIcu();
     }, 5000);
   }
   public cancelIcu() {
     this.ICU = false;
+    this.icuContent = "";
   }
   public death() {
     this.cancelIcu();
     this.pause();
     this.DIE = true;
+    if (this.SCENE.satiety * this.SCENE.emotion * this.SCENE.health === 0) {
+      let str = "";
+      if (this.SCENE.satiety <= 0) {
+        str = "喵喵活活饿死...";
+      }
+      if (this.SCENE.emotion <= 0) {
+        str = "喵喵郁郁寡欢, 从高处跳下去摔死了...";
+      }
+      if (this.SCENE.health <= 0) {
+        str = "喵喵太久没有清扫, 染了猫瘟一命呜呼...";
+      }
+      this.deathContent = str;
+    }
   }
   public cancelDeath() {
     this.start();
     this.DIE = false;
+    this.deathContent = "";
   }
   /**
    * base : base value to radom, default 1
@@ -185,6 +435,11 @@ export default class Demo extends Vue {
       this.SCENE.satiety += item.satiety || this.defaultDelta();
       this.SCENE.emotion += item.emotion || this.defaultDelta();
       this.SCENE.health += item.health || this.defaultDelta(0.5);
+      const content = item.parent.content();
+      if (content.length > 0) {
+        this.death();
+        this.deathContent = content;
+      }
     }
     this.checking();
   }
@@ -194,13 +449,18 @@ export default class Demo extends Vue {
       this.SCENE.satiety += item.satiety || this.defaultDelta();
       this.SCENE.emotion += item.emotion || this.defaultDelta();
       this.SCENE.health += item.health || this.defaultDelta(0.5);
+      const content = item.parent.content();
+      if (content.length > 0) {
+        this.death();
+        this.deathContent = content;
+      }
     }
     this.checking();
   }
   public clean() {
     if (this.RENDER_MARK) {
-      this.SCENE.satiety += this.defaultDelta(0.5);
-      this.SCENE.emotion += this.defaultDelta(0.5);
+      this.SCENE.satiety += this.defaultDelta(0.7, false) * -1;
+      this.SCENE.emotion += this.defaultDelta(0.5, false);
       this.SCENE.health += this.defaultDelta(1, false);
     }
     this.checking();
@@ -208,9 +468,9 @@ export default class Demo extends Vue {
 
   public checking() {
     if (
-      Math.ceil(this.SCENE.satiety) <= 3 ||
-      Math.ceil(this.SCENE.emotion) <= 3 ||
-      Math.ceil(this.SCENE.health) <= 3
+      Math.ceil(this.SCENE.satiety) <= 4 ||
+      Math.ceil(this.SCENE.emotion) <= 4 ||
+      Math.ceil(this.SCENE.health) <= 4
     ) {
       this.icu();
     } else {
@@ -222,8 +482,6 @@ export default class Demo extends Vue {
       this.SCENE.health <= 0
     ) {
       this.death();
-    } else {
-      this.cancelDeath();
     }
   }
   public living() {
