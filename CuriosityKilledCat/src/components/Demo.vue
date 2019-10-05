@@ -41,7 +41,7 @@ export default class Demo extends Vue {
 
   private RENDER_INTV = 166.666;
   private RENDER_MARK = false;
-  private RENDER_TIMER = undefined;
+  private RENDER_TIMER: any;
 
   private ICU = false;
   private DIE = false;
@@ -50,7 +50,7 @@ export default class Demo extends Vue {
   private deathContent = "";
 
   public Utils = {
-    displayNumber(num) {
+    displayNumber(num: number) {
       return Number(num).toFixed(3);
     }
   };
@@ -93,7 +93,7 @@ export default class Demo extends Vue {
     // -- b [playItem/feedItem:item.id|clean:0]
     // -- c if last time was simply 'a' value is 1, else is 0.
     records: [],
-    _formatNumber(num) {
+    _formatNumber(num: number) {
       if (typeof num !== "number") {
         num = Number(num);
       }
@@ -143,7 +143,7 @@ export default class Demo extends Vue {
       ",而导致死亡...";
     return str;
   }
-  private AccidentsRecords = [];
+  private AccidentsRecords: number[] = [];
   private Accident = {
     Pipe: {
       id: 1,
@@ -440,7 +440,7 @@ export default class Demo extends Vue {
   public destroyTimer() {
     if (this.RENDER_TIMER) {
       clearInterval(this.RENDER_TIMER);
-      this.RENDER_TIMER = undefined;
+      this.RENDER_TIMER = null;
     }
   }
   public start() {
