@@ -1,9 +1,9 @@
 <template>
   <div class="scene">
     <p class="row">多大了? : {{SCENE.life}}</p>
-    <p class="row">饿不饿? : {{Utils.displayNumber(SCENE.satiety)}}</p>
+    <p class="row">饿不饿? : {{Utils.displayNumber(SCENE.satiety)}} (不能超过 10)</p>
     <p class="row">开心不? : {{Utils.displayNumber(SCENE.emotion)}}</p>
-    <p class="row">干净不? : {{Utils.displayNumber(SCENE.health)}}</p>
+    <p class="row">干净不? : {{Utils.displayNumber(SCENE.health)}} (不能超过 10)</p>
     <div class="row">
       用什么撸它? &nbsp;
       <select v-model="SCENE.played">
@@ -107,24 +107,39 @@ export default class Demo extends Vue {
   private AccidentRandom(type = 0) {
     const _types = ["管状", "球状", "块状", "圆状", "棍状", "袋形", "小鱼"];
     const _acc_type = _types[type];
-    const _actions = ["误食", "追逐", "误触"];
-    const _acc_action = Math.floor(Math.random() * _actions.length);
+    const _actions = ["误食", "追逐"];
+    const _acc_action = Math.floor(Math.random() * _actions.length - 1);
     const _things = ["塑料", "金属", "玻璃", "带电", "未知"];
-    const _acc_thing = Math.floor(Math.random() * _things.length);
+    const _acc_thing = Math.floor(Math.random() * _things.length - 1);
     const _deads = [
-      "无法消化,无法排泄",
-      "卡住呼吸管",
-      "边缘划破器官",
-      "未知原因"
+      [
+        "莫名中毒",
+        "卡住呼吸管",
+        "边缘划破内脏",
+        "无法消化排泄",
+        "堵住屁眼",
+        "未知原因"
+      ],
+      [
+        "踩到裸露电线上",
+        "表面毒素渗入皮肤伤口而中毒",
+        "过于兴奋心肌劳损",
+        "不小心跌落屋檐",
+        "穿过马路时来往车辆撞飞",
+        "惹怒邻居将其甩飞",
+        "未知原因"
+      ]
     ];
-    const _acc_dead = Math.floor(Math.random() * _deads.length);
+    const _acc_dead = Math.floor(
+      Math.random() * _deads[_acc_action].length - 1
+    );
     const str =
       "喵喵" +
       _actions[_acc_action] +
       _things[_acc_thing] +
       _acc_type +
       "物体,致使" +
-      _deads[_acc_dead] +
+      _deads[_acc_action][_acc_dead] +
       ",而导致死亡...";
     return str;
   }
@@ -134,25 +149,23 @@ export default class Demo extends Vue {
       id: 1,
       maxCount: 10,
       count: 0,
-      _isOccur: id => {
-        const len = this.AccidentsRecords.length;
-        let count = 0,
-          last = len - 1;
-        const maxCount = 10;
-        for (let i = len - 1; i >= 0; i--) {
-          const item = this.AccidentsRecords[i];
-          if (last - i <= 3) {
-            if (item === id) {
-              count += 1;
-            }
-            last = i;
-          } else {
-            break;
-          }
-        }
-      },
       content: () => {
-        this.Accident.Pipe.count += 1;
+        const len = this.AccidentsRecords.length;
+        if (len > 0) {
+          for (let i = len - 1; i >= 0; i--) {
+            const item = this.AccidentsRecords[i];
+            if (item !== this.Accident.Pipe.id) {
+              this.Accident.Pipe.count = 0;
+              this.AccidentsRecords.length = 0;
+              this.AccidentsRecords.push(this.Accident.Pipe.id);
+              break;
+            } else {
+              this.Accident.Pipe.count += 1;
+            }
+          }
+        } else {
+          this.AccidentsRecords.push(this.Accident.Pipe.id);
+        }
         if (
           this.Accident.Pipe.count >=
           this.Accident.Pipe.maxCount + Math.ceil(Math.random() * 10)
@@ -166,10 +179,21 @@ export default class Demo extends Vue {
     },
     Ball: {
       id: 2,
-      maxCount: 10,
+      maxCount: 14,
       count: 0,
       content: () => {
-        this.Accident.Ball.count += 1;
+        const len = this.AccidentsRecords.length;
+        for (let i = len - 1; i >= 0; i--) {
+          const item = this.AccidentsRecords[i];
+          if (item !== this.Accident.Ball.id) {
+            this.Accident.Ball.count = 0;
+            this.AccidentsRecords.length = 0;
+            this.AccidentsRecords.push(this.Accident.Ball.id);
+            break;
+          } else {
+            this.Accident.Ball.count += 1;
+          }
+        }
         if (
           this.Accident.Ball.count >=
           this.Accident.Ball.maxCount + Math.ceil(Math.random() * 10)
@@ -183,10 +207,21 @@ export default class Demo extends Vue {
     },
     Square: {
       id: 3,
-      maxCount: 10,
+      maxCount: 20,
       count: 0,
       content: () => {
-        this.Accident.Square.count += 1;
+        const len = this.AccidentsRecords.length;
+        for (let i = len - 1; i >= 0; i--) {
+          const item = this.AccidentsRecords[i];
+          if (item !== this.Accident.Square.id) {
+            this.Accident.Square.count = 0;
+            this.AccidentsRecords.length = 0;
+            this.AccidentsRecords.push(this.Accident.Square.id);
+            break;
+          } else {
+            this.Accident.Square.count += 1;
+          }
+        }
         if (
           this.Accident.Square.count >=
           this.Accident.Square.maxCount + Math.ceil(Math.random() * 10)
@@ -203,7 +238,18 @@ export default class Demo extends Vue {
       maxCount: 10,
       count: 0,
       content: () => {
-        this.Accident.Circle.count += 1;
+        const len = this.AccidentsRecords.length;
+        for (let i = len - 1; i >= 0; i--) {
+          const item = this.AccidentsRecords[i];
+          if (item !== this.Accident.Circle.id) {
+            this.Accident.Circle.count = 0;
+            this.AccidentsRecords.length = 0;
+            this.AccidentsRecords.push(this.Accident.Circle.id);
+            break;
+          } else {
+            this.Accident.Circle.count += 1;
+          }
+        }
         if (
           this.Accident.Circle.count >=
           this.Accident.Circle.maxCount + Math.ceil(Math.random() * 10)
@@ -217,10 +263,21 @@ export default class Demo extends Vue {
     },
     Stick: {
       id: 5,
-      maxCount: 10,
+      maxCount: 12,
       count: 0,
       content: () => {
-        this.Accident.Stick.count += 1;
+        const len = this.AccidentsRecords.length;
+        for (let i = len - 1; i >= 0; i--) {
+          const item = this.AccidentsRecords[i];
+          if (item !== this.Accident.Stick.id) {
+            this.Accident.Stick.count = 0;
+            this.AccidentsRecords.length = 0;
+            this.AccidentsRecords.push(this.Accident.Stick.id);
+            break;
+          } else {
+            this.Accident.Stick.count += 1;
+          }
+        }
         if (
           this.Accident.Stick.count >=
           this.Accident.Stick.maxCount + Math.ceil(Math.random() * 10)
@@ -234,10 +291,21 @@ export default class Demo extends Vue {
     },
     Packet: {
       id: 6,
-      maxCount: 10,
+      maxCount: 20,
       count: 0,
       content: () => {
-        this.Accident.Packet.count += 1;
+        const len = this.AccidentsRecords.length;
+        for (let i = len - 1; i >= 0; i--) {
+          const item = this.AccidentsRecords[i];
+          if (item !== this.Accident.Packet.id) {
+            this.Accident.Packet.count = 0;
+            this.AccidentsRecords.length = 0;
+            this.AccidentsRecords.push(this.Accident.Packet.id);
+            break;
+          } else {
+            this.Accident.Packet.count += 1;
+          }
+        }
         if (
           this.Accident.Packet.count >=
           this.Accident.Packet.maxCount + Math.ceil(Math.random() * 10)
@@ -251,10 +319,21 @@ export default class Demo extends Vue {
     },
     Fish: {
       id: 7,
-      maxCount: 10,
+      maxCount: 30,
       count: 0,
       content: () => {
-        this.Accident.Fish.count += 1;
+        const len = this.AccidentsRecords.length;
+        for (let i = len - 1; i >= 0; i--) {
+          const item = this.AccidentsRecords[i];
+          if (item !== this.Accident.Fish.id) {
+            this.Accident.Fish.count = 0;
+            this.AccidentsRecords.length = 0;
+            this.AccidentsRecords.push(this.Accident.Fish.id);
+            break;
+          } else {
+            this.Accident.Fish.count += 1;
+          }
+        }
         if (
           this.Accident.Fish.count >=
           this.Accident.Fish.maxCount + Math.ceil(Math.random() * 10)
@@ -400,8 +479,8 @@ export default class Demo extends Vue {
     this.cancelIcu();
     this.pause();
     this.DIE = true;
+    let str = "";
     if (this.SCENE.satiety * this.SCENE.emotion * this.SCENE.health === 0) {
-      let str = "";
       if (this.SCENE.satiety <= 0) {
         str = "喵喵活活饿死...";
       }
@@ -411,8 +490,12 @@ export default class Demo extends Vue {
       if (this.SCENE.health <= 0) {
         str = "喵喵太久没有清扫, 染了猫瘟一命呜呼...";
       }
-      this.deathContent = str;
+    } else if (this.SCENE.satiety > 10) {
+      str = "喵喵活活撑死...";
+    } else if (this.SCENE.health > 10) {
+      str = "喵喵太干净失去免疫力, 染了猫瘟一命呜呼...";
     }
+    this.deathContent = str;
   }
   public cancelDeath() {
     this.start();
@@ -478,8 +561,10 @@ export default class Demo extends Vue {
     }
     if (
       this.SCENE.satiety <= 0 ||
+      this.SCENE.satiety > 10 ||
       this.SCENE.emotion <= 0 ||
-      this.SCENE.health <= 0
+      this.SCENE.health <= 0 ||
+      this.SCENE.health > 10
     ) {
       this.death();
     }
@@ -496,7 +581,7 @@ export default class Demo extends Vue {
     this.RENDER_TIMER = setInterval(() => {
       if (this.RENDER_MARK) {
         // TODO: do what this scene need to do
-        if (cycleTime === 26) {
+        if (cycleTime === 20) {
           cycleTime = 1;
           // TODO: do what per cycle need to do
           this.living();
