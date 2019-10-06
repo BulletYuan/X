@@ -1,35 +1,44 @@
 <template>
-  <div class="scene">
-    <p class="row">多大了? : {{SCENE.life}}</p>
-    <p class="row">饿不饿? : {{Utils.displayNumber(SCENE.satiety)}} (不能超过 10)</p>
-    <p class="row">开心不? : {{Utils.displayNumber(SCENE.emotion)}}</p>
-    <p class="row">干净不? : {{Utils.displayNumber(SCENE.health)}} (不能超过 10)</p>
-    <div class="row">
-      用什么撸它? &nbsp;
-      <select v-model="SCENE.played">
-        <option v-for="(pi, index) of playedList" :key="pi.id" :value="index">{{pi.value}}</option>
-      </select>
-    </div>
-    <div class="row">
-      给它吃什么? &nbsp;
-      <select v-model="SCENE.feed">
-        <option v-for="(fi, index) of feedList" :key="fi.id" :value="index">{{fi.value}}</option>
-      </select>
-    </div>
-    <div class="row">
-      <button @click="feed()">给饭</button>
-      <button @click="play()">撸它</button>
-      <button @click="clean()">铲屎</button>
-    </div>
+  <div class="scene" @resize="resize()">
+    <div class="info">
+      <p class="row">多大了? : {{SCENE.life}}</p>
+      <p class="row">开心不? : {{Utils.displayNumber(SCENE.emotion)}}</p>
+      <p class="row">饿不饿? : {{Utils.displayNumber(SCENE.satiety)}} (不能超过 10)</p>
+      <p class="row">干净不? : {{Utils.displayNumber(SCENE.health)}} (不能超过 10)</p>
+      <div class="row">
+        用什么撸它? &nbsp;
+        <select v-model="SCENE.played">
+          <option v-for="(pi, index) of playedList" :key="pi.id" :value="index">{{pi.value}}</option>
+        </select>
+      </div>
+      <div class="row">
+        给它吃什么? &nbsp;
+        <select v-model="SCENE.feed">
+          <option v-for="(fi, index) of feedList" :key="fi.id" :value="index">{{fi.value}}</option>
+        </select>
+      </div>
+      <div class="row">
+        <button @click="feed()">给饭</button>
+        <button @click="play()">撸它</button>
+        <button @click="clean()">铲屎</button>
+      </div>
 
-    <div v-if="ICU" class="row icu">
-      <p>ICU警告!</p>
-      <p>{{icuContent}}</p>
+      <div v-if="ICU" class="row icu">
+        <p>ICU警告!</p>
+        <p>{{icuContent}}</p>
+      </div>
+      <div v-if="DIE" class="row death">
+        <p>讣告!</p>
+        <p>{{deathContent}}</p>
+      </div>
     </div>
-    <div v-if="DIE" class="row death">
-      <p>讣告!</p>
-      <p>{{deathContent}}</p>
-    </div>
+    <canvas
+      ref="Canvas"
+      class="stage"
+      :width="DRAW.sW"
+      :height="DRAW.sH"
+      :style="{'width':DRAW.sW+'px','height':DRAW.sH+'px'}"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -39,9 +48,20 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class Demo extends Vue {
   // @Prop() private msg!: string;
 
-  private RENDER_INTV = 166.666;
+  private RENDER_START = 0;
+  private RENDER_TRACE = {
+    livingCycle: 20,
+    actions: {
+      blinkCycle: 20,
+      tongueCycle: 100,
+      waggingCycle: 40
+    }
+  };
   private RENDER_MARK = false;
   private RENDER_TIMER: any;
+
+  private RENDER_REF: HTMLCanvasElement;
+  private RENDER_CONTEXT: CanvasRenderingContext2D;
 
   private ICU = false;
   private DIE = false;
@@ -102,6 +122,11 @@ export default class Demo extends Vue {
       }
       return Number(num.toFixed(3));
     }
+  };
+
+  private DRAW = {
+    sW: window.innerWidth,
+    sH: window.innerHeight
   };
 
   private AccidentRandom(type = 0) {
@@ -417,29 +442,49 @@ export default class Demo extends Vue {
   ];
 
   public mounted() {
-    this.resetScene();
+    this.resetSceneInfo();
+    this.resetSceneCanvas();
+
     this.start();
-    this.paint();
+    this.RENDER_TIMER = requestAnimationFrame(this.processing);
   }
   public destroy() {
     this.pause();
     this.destroyTimer();
   }
+  public resize() {
+    this.DRAW.sW = window.innerWidth;
+    this.DRAW.sH = window.innerHeight;
+  }
 
-  public resetScene() {
+  public resetSceneInfo() {
     const self = this;
     this.SCENE.life = 0;
     this.SCENE.played = 0;
     this.SCENE.feed = 0;
+    this.AccidentsRecords.length = 0;
     this.SCENE._params = [
-      Math.random() * 2 + 8,
+      Math.random() * 5 + 5,
       Math.random() * 5 + 5,
       Math.random() * 5 + 5
     ];
   }
+  public resetSceneCanvas() {
+    //defined canvas element
+    if (!this.RENDER_REF && this.$refs && this.$refs.Canvas) {
+      this.RENDER_REF = this.$refs.Canvas as HTMLCanvasElement;
+    }
+    // defined canvas context
+    if (!this.RENDER_CONTEXT && this.RENDER_REF) {
+      this.RENDER_CONTEXT = this.RENDER_REF.getContext("2d");
+    }
+
+    // reset canvas
+    this.RENDER_CONTEXT.clearRect(0, 0, this.DRAW.sW, this.DRAW.sH);
+  }
   public destroyTimer() {
     if (this.RENDER_TIMER) {
-      clearInterval(this.RENDER_TIMER);
+      cancelAnimationFrame(this.RENDER_TIMER);
       this.RENDER_TIMER = null;
     }
   }
@@ -576,42 +621,56 @@ export default class Demo extends Vue {
     this.SCENE.health += this.defaultDelta(1, false) * -1;
     this.checking();
   }
-  public paint() {
-    let cycleTime = 1;
-    this.RENDER_TIMER = setInterval(() => {
-      if (this.RENDER_MARK) {
-        // TODO: do what this scene need to do
-        if (cycleTime === 20) {
-          cycleTime = 1;
-          // TODO: do what per cycle need to do
-          this.living();
-        }
-        cycleTime += 1;
+  public drawing(cycleTime: number) {
+    this.resetSceneCanvas();
+    // draw canvas
+  }
+
+  public processing(current?: number) {
+    if (!this.RENDER_START) {
+      this.RENDER_START = current;
+    }
+    const cycleTime = current - this.RENDER_START;
+    if (this.RENDER_MARK) {
+      // TODO: do what this scene need to do
+      if (cycleTime === this.RENDER_TRACE.livingCycle) {
+        this.living();
       }
-    }, this.RENDER_INTV);
+      this.drawing(cycleTime);
+      requestAnimationFrame(this.processing);
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
 .scene {
-  padding: 0 10px;
+  width: 100%;
+  height: 100%;
   text-align: left;
-  .row {
-    margin-top: 10px;
-    &.icu {
-      color: rgb(204, 82, 0);
-      margin-top: 20px;
+  .info {
+    width: 100%;
+    padding: 10px;
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    .row {
+      margin-top: 10px;
+      &.icu {
+        color: rgb(204, 82, 0);
+        margin-top: 20px;
+      }
+      &.death {
+        color: #fff;
+        font-weight: bold;
+        font-size: 16px;
+        margin-top: 50px;
+      }
     }
-    &.death {
-      color: #fff;
-      font-weight: bold;
-      font-size: 16px;
-      margin-top: 50px;
+    button {
+      margin-right: 10px;
+      padding: 5px 20px;
     }
-  }
-  button {
-    margin-right: 10px;
-    padding: 5px 20px;
   }
 }
 </style>
