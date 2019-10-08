@@ -12,11 +12,13 @@ import { Component, Vue } from "vue-property-decorator";
 // import HelloWorld from "./components/HelloWorld.vue";
 import Demo from "./components/Demo.vue";
 import Paint from "./components/Paint.vue";
+import ClassFrame from "./components/ClassFrame.vue";
 
 @Component({
   components: {
     Demo,
-    Paint
+    Paint,
+    ClassFrame
   }
 })
 export default class App extends Vue {}
