@@ -52,6 +52,7 @@ export default class Paint extends Vue {
     }
   };
 
+  private savingMark = false;
   private savingIndex = -1;
   private saving = {
     edge: [],
@@ -80,12 +81,18 @@ export default class Paint extends Vue {
     }
   }
   public getLines() {
-    if (this.RENDER_CONTEXT && this.savingIndex >= 0) {
-      const edge = this.DRAW.edges[this.savingIndex];
-      const edgePoint = this.DRAW.edgePoints[this.savingIndex];
-      this.saving.edge = edge;
-      this.saving.edgePoint = edgePoint;
-      this.clean();
+    if (this.RENDER_CONTEXT) {
+      if (this.savingMark && this.savingIndex >= 0) {
+        this.savingMark = false;
+        const edge = this.DRAW.edges[this.savingIndex];
+        const edgePoint = this.DRAW.edgePoints[this.savingIndex];
+        this.saving.edge = edge;
+        this.saving.edgePoint = edgePoint;
+        this.clean();
+      } else {
+        this.savingMark = true;
+        alert(`请点击选择图像`);
+      }
     }
   }
   public setLines() {
@@ -128,37 +135,39 @@ export default class Paint extends Vue {
     }
   }
   public click(e: MouseEvent) {
-    const [x, y, width, eLen] = [
-      e.clientX * this.DRAW.ratio,
-      e.clientY * this.DRAW.ratio,
-      this.DRAWSTYLE.edge.lineWidth,
-      this.DRAW.edges.length
-    ];
-    for (let i = 0; i < eLen; i++) {
-      const points = this.DRAW.edges[i];
-      const pLen = points.length;
-      let isFind = false;
-      for (let j = 0; j < pLen; j++) {
-        const point = points[j];
-        if (
-          point[0] - width <= x &&
-          point[0] + width >= x &&
-          (point[1] - width <= y && point[1] + width >= y)
-        ) {
-          this.savingIndex = i;
-          isFind = true;
+    if (this.savingMark) {
+      const [x, y, width, eLen] = [
+        e.clientX * this.DRAW.ratio,
+        e.clientY * this.DRAW.ratio,
+        this.DRAWSTYLE.edge.lineWidth,
+        this.DRAW.edges.length
+      ];
+      for (let i = 0; i < eLen; i++) {
+        const points = this.DRAW.edges[i];
+        const pLen = points.length;
+        let isFind = false;
+        for (let j = 0; j < pLen; j++) {
+          const point = points[j];
+          if (
+            point[0] - width <= x &&
+            point[0] + width >= x &&
+            (point[1] - width <= y && point[1] + width >= y)
+          ) {
+            this.savingIndex = i;
+            isFind = true;
+            break;
+          }
+        }
+        if (isFind) {
           break;
         }
+        this.savingIndex = -1;
       }
-      if (isFind) {
-        break;
+      if (this.savingIndex >= 0) {
+        alert(`选择了图像 ${this.savingIndex}`);
+      } else {
+        alert(`未选中图像`);
       }
-      this.savingIndex = -1;
-    }
-    if (this.savingIndex >= 0) {
-      alert(`选择了图像 ${this.savingIndex}`);
-    } else {
-      alert(`未选中图像`);
     }
   }
 
