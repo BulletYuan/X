@@ -3,6 +3,50 @@
 const puppeteer = require('puppeteer');
 
 module.exports = {
+  response(status = 200, headers = {}, body = []) {
+    status = Number(status) || 200;
+    headers = Object.keys(headers).length > 0 ? headers : {
+      'Content-Type': 'application/json; charset=utf-8',
+    };
+    body = body || [];
+    return {
+      status, headers, body,
+    };
+  },
+  responseData(data, msg = 'success') {
+    const result = {
+      state: 0,
+      data,
+      msg,
+    };
+    return result;
+  },
+
+  ioFormat(action, errMsg = null) {
+    let metadata;
+    if (errMsg == null) {
+      metadata = {
+        state: 1,
+        msg: '',
+      };
+    } else {
+      metadata = {
+        state: 0,
+        msg: errMsg,
+      };
+    }
+    const meta = Object.assign({}, {
+      timestamp: Date.now(),
+    }, metadata);
+
+    return {
+      meta,
+      data: {
+        action,
+      },
+    };
+  },
+
   Browser: null,
   async getBrowser() {
     if (!this.Browser) {
