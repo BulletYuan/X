@@ -3,6 +3,17 @@
 const Service = require('egg').Service;
 
 class News163Service extends Service {
+  async getIP(url) {
+    if (!url) { return { data: {} }; }
+    const { ctx } = this;
+    const result = await ctx.curl('http://' + url, {
+      method: 'GET',
+      gzip: true,
+      dataType: 'text',
+    });
+    console.log(result);
+  }
+
   async rank() {
     const { ctx } = this;
     const result = await ctx.curl('http://news.163.com/rank/', {
@@ -27,6 +38,84 @@ class News163Service extends Service {
         watch = watch.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
         data.push({
           no, url, topic, watch,
+        });
+      }
+    }
+    return {
+      data,
+    };
+  }
+  async world() {
+    const { ctx } = this;
+    const result = await ctx.curl('https://temp.163.com/special/00804KVA/cm_guoji.js?callback=data_callback', {
+      method: 'GET',
+      gzip: true,
+      headers: {
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+      },
+      dataType: 'text',
+    });
+    const content = result.data;
+    let list = content.substring(14, content.length - 1);
+    list = JSON.parse(list);
+    const data = [];
+    for (let i = 0; i < list.length; i++) {
+      const el = list[i];
+      const url = el['docurl'] || '';
+      const topic = (el['title'] || '');
+      const time = Math.floor(new Date(el['time'] || 0).getTime() / 1000);
+      const thumb = el['imgurl'] || '';
+      data.push({
+        url, topic, time, thumb,
+      });
+    }
+    return {
+      data,
+    };
+  }
+  async domestic() {
+    const { ctx } = this;
+    const result = await ctx.curl('https://temp.163.com/special/00804KVA/cm_guonei.js?callback=data_callback', {
+      method: 'GET',
+      gzip: true,
+      dataType: 'text',
+    });
+    const content = result.data;
+    let list = content.substring(14, content.length - 1);
+    list = JSON.parse(list);
+    const data = [];
+    for (let i = 0; i < list.length; i++) {
+      const el = list[i];
+      const url = el['docurl'] || '';
+      const topic = ((el['title'] || ''));
+      const time = Math.floor(new Date(el['time'] || 0).getTime() / 1000);
+      const thumb = el['imgurl'] || '';
+      data.push({
+        url, topic, time, thumb,
+      });
+    }
+    return {
+      data,
+    };
+  }
+  async newest() {
+    const { ctx } = this;
+    const result = await ctx.curl('http://news.163.com/world/', {
+      method: 'GET',
+      gzip: true,
+      dataType: 'text',
+    });
+    const content = result.data;
+    const list = content.match(/\<a href\=(.*?)\<\/a\>/gi);
+    const year = new Date().getFullYear() - 2000;
+    const data = [];
+    for (let i = 0; i < list.length; i++) {
+      const el = list[i];
+      if (el.indexOf('news.') > 0 && el.indexOf('/' + year + '/') > 0 && el.indexOf('.html') > 0) {
+        const url = el.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1];
+        const topic = el.match(/\>(.*?)\</gi)[0].replace(/\<|\>/g, '');
+        data.push({
+          url, topic,
         });
       }
     }
