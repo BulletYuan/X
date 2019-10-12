@@ -17,10 +17,11 @@ class HomeController extends Controller {
 
     // const data = await ctx.service.cctv.newest(); // done
     // const data = await ctx.service.news163.newest(); // done
+    const data = await ctx.service.haiwainet.newest(); // done
 
     // const data = await ctx.service.news163.world(); // todo encoding
     // const data = await ctx.service.news163.domestic(); // todo encoding
-    const data = await ctx.service.cctv.world(); // done
+    // const data = await ctx.service.cctv.world(); // done
     // const data = await ctx.service.cctv.domestic(); // done
 
     const res = ctx.helper.response(data.status, data.headers, data.data);
