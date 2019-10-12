@@ -20,12 +20,13 @@ class HaiwaiService extends Service {
         const link = news.match(/\<a(.*?)\<\/a/gi)[0];
         const url = link.match(/href\=\"(.*?)\"/gi) ? link.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1] : '';
         const topic = link.match(/\>(.*?)\</gi) ? link.match(/\>(.*?)\</gi)[0].replace(/\>|\</g, '') : '';
-        let time = link.match(/span\>(.*?)\</gi);
+        let time = news.match(/span\>(.*?)\<\/span/gi);
         if (time && time.length > 0) {
           time = time[0].match(/\>(.*?)\</gi)[0].replace(/\<|\>/gi, '');
+          time = time.replace(/年|月/g, '-').replace('日', '');
           time = Math.floor(new Date(time).getTime() / 1000);
         } else {
-          time = Math.floor(new Date().getTime() / 1000);
+          time = '';
         }
         data.push({
           url, topic, time,
