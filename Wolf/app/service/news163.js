@@ -3,17 +3,6 @@
 const Service = require('egg').Service;
 
 class News163Service extends Service {
-  async getIP(url) {
-    if (!url) { return { data: {} }; }
-    const { ctx } = this;
-    const result = await ctx.curl('http://' + url, {
-      method: 'GET',
-      gzip: true,
-      dataType: 'text',
-    });
-    console.log(result);
-  }
-
   async rank() {
     const { ctx } = this;
     const result = await ctx.curl('http://news.163.com/rank/', {
@@ -45,59 +34,48 @@ class News163Service extends Service {
       data,
     };
   }
-  async world() {
+
+  async requestApi(kw = '', type = 'guonei') {
     const { ctx } = this;
-    const result = await ctx.curl('https://temp.163.com/special/00804KVA/cm_guoji.js?callback=data_callback', {
+    const result = await ctx.curl('https://temp.163.com/special/00804KVA/cm_' + type + '.js?callback=' + kw, {
       method: 'GET',
       gzip: true,
-      headers: {
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-      },
-      dataType: 'text',
     });
-    const content = result.data;
-    let list = content.substring(14, content.length - 1);
+    let content = result.data;
+    content = new Buffer(content, 'utf-8');
+    content = content.toString();
+    let list = content.substring(kw.length + 1, content.length - 1);
     list = JSON.parse(list);
     const data = [];
-    for (let i = 0; i < list.length; i++) {
-      const el = list[i];
-      const url = el['docurl'] || '';
-      const topic = (el['title'] || '');
-      const time = Math.floor(new Date(el['time'] || 0).getTime() / 1000);
-      const thumb = el['imgurl'] || '';
-      data.push({
-        url, topic, time, thumb,
-      });
+    if (list && list.length > 0) {
+      for (let i = 0; i < list.length; i++) {
+        const el = list[i];
+        const url = el.docurl || '';
+        const topic = (el.title || '');
+        const time = Math.floor(new Date(el.time || 0).getTime() / 1000);
+        const thumb = el.imgurl || '';
+        data.push({
+          url, topic, time, thumb,
+        });
+      }
     }
+    return {
+      data,
+    };
+  }
+  async world() {
+    const data = await this.requestApi('data_callback', 'guoji');
     return {
       data,
     };
   }
   async domestic() {
-    const { ctx } = this;
-    const result = await ctx.curl('https://temp.163.com/special/00804KVA/cm_guonei.js?callback=data_callback', {
-      method: 'GET',
-      gzip: true,
-      dataType: 'text',
-    });
-    const content = result.data;
-    let list = content.substring(14, content.length - 1);
-    list = JSON.parse(list);
-    const data = [];
-    for (let i = 0; i < list.length; i++) {
-      const el = list[i];
-      const url = el['docurl'] || '';
-      const topic = ((el['title'] || ''));
-      const time = Math.floor(new Date(el['time'] || 0).getTime() / 1000);
-      const thumb = el['imgurl'] || '';
-      data.push({
-        url, topic, time, thumb,
-      });
-    }
+    const data = await this.requestApi('data_callback');
     return {
       data,
     };
   }
+
   async newest() {
     const { ctx } = this;
     const result = await ctx.curl('http://news.163.com/world/', {

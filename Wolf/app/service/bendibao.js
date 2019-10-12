@@ -24,7 +24,7 @@ class BendibaoService extends Service {
     };
   }
 
-  async news(city = '成都') {
+  async news(city) {
     const { ctx } = this;
     const list = await this.list();
     const cities = list.data;
@@ -32,7 +32,7 @@ class BendibaoService extends Service {
     let url = '';
     for (let i = len - 1; i >= 0; i--) {
       const c = cities[i];
-      if (city === c.city) {
+      if (city.indexOf(c.city) >= 0) {
         url = c.url;
         break;
       }
