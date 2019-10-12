@@ -20,7 +20,20 @@ class CctvService extends Service {
       list = JSON.parse(list);
       if (list && list.data && list.data.list && list.data.total) {
         total = list.data.total;
-        data = list.data.list;
+        if (list.length > 0) {
+          for (let i = 0; i < list.length; i++) {
+            const item = list[i];
+            const time = Math.floor(new Date(item.focus_date || 0).getTime() / 1000);
+            data.push({
+              url: item.url || '',
+              topic: item.title || '',
+              digest: item.brief || '',
+              thumb: item.image || '',
+              time,
+              // keys: item.keywords || '',
+            });
+          }
+        }
       }
     }
     return {
