@@ -1,6 +1,7 @@
 'use strict';
 
 const Service = require('egg').Service;
+const Iconv = require('iconv-lite');
 
 class News163Service extends Service {
   async rank() {
@@ -40,9 +41,12 @@ class News163Service extends Service {
     const result = await ctx.curl('https://temp.163.com/special/00804KVA/cm_' + type + '.js?callback=' + kw, {
       method: 'GET',
       gzip: true,
+      headers: {
+        'accept-charset': 'utf-8',
+      }
     });
     let content = result.data;
-    content = new Buffer(content, 'utf-8');
+    content = Iconv.decode(new Buffer(content), 'gbk');
     content = content.toString();
     let list = content.substring(kw.length + 1, content.length - 1);
     list = JSON.parse(list);
@@ -54,8 +58,10 @@ class News163Service extends Service {
         const topic = (el.title || '');
         const time = Math.floor(new Date(el.time || 0).getTime() / 1000);
         const thumb = el.imgurl || '';
+        // const keywords = el.keywords ? el.keywords.map(el => el.keyname).join(' ') : '';
         data.push({
           url, topic, time, thumb,
+          // keywords,
         });
       }
     }
