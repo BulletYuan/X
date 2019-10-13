@@ -7,10 +7,10 @@ class HomeController extends Controller {
     const { ctx } = this;
     // const result = await ctx.service.toutiao.search('钢铁侠');
 
-    // const {
-    //   city,
-    // } = await ctx.service.ip.ip(); // done
-    // const data = await ctx.service.bendibao.news(city); // done
+    const {
+      city,
+    } = await ctx.service.ip.ip(); // done
+    const data = await ctx.service.bendibao.news(city); // done
 
     // const data = await ctx.service.news163.rank(); // done
     // const data = await ctx.service.ifeng.ranks(); // done
@@ -21,7 +21,7 @@ class HomeController extends Controller {
     // const data = await ctx.service.chinanews.newest(); // todo pagination
     // const data = await ctx.service.huanqiu.newest(); // done
 
-    const data = await ctx.service.news163.world(); // done
+    // const data = await ctx.service.news163.world(); // done
     // const data = await ctx.service.news163.domestic(); // done
     // const data = await ctx.service.cctv.world(); // done
     // const data = await ctx.service.cctv.domestic(); // done
