@@ -45,7 +45,7 @@ class ChinanewsService extends Service {
       for (let i = 0; i < topNews.length; i++) {
         const news = topNews[i];
         const link = news.match(/\<a(.*?)\<\/a/gi)[0];
-        const url = 'http:' + link.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1];
+        const url = link.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1];
         const topic = link.match(/\>(.*?)\</gi)[0].replace(/\>|\</g, '');
         let time = '';
         let keywords = '';
