@@ -7,10 +7,10 @@ class HomeController extends Controller {
     const { ctx } = this;
     // const result = await ctx.service.toutiao.search('钢铁侠');
 
-    const {
-      city,
-    } = await ctx.service.ip.ip(); // done
-    const data = await ctx.service.bendibao.news(city); // done
+    // const {
+    //   city,
+    // } = await ctx.service.ip.ip(); // done
+    // const data = await ctx.service.bendibao.news(city); // done
 
     // const data = await ctx.service.news163.rank(); // done
     // const data = await ctx.service.ifeng.ranks(); // done
@@ -27,6 +27,39 @@ class HomeController extends Controller {
     // const data = await ctx.service.cctv.domestic(); // done
     // const data = await ctx.service.chinanews.world(); // done
     // const data = await ctx.service.chinanews.domestic(); // done
+
+    // const data = await ctx.service.dbUrlPool.find({
+    //   topic: 'test',
+    //   state: 0,
+    // });
+    // const data = await ctx.service.dbUrlPool.insert({
+    //   url: 'test',
+    //   topic: 'test',
+    //   time: 100,
+    // });
+    const data = await ctx.service.dbUrlPool.insertArray([{
+      url: 'test',
+      topic: 'test',
+      time: 1002,
+    }, {
+      url: 'test',
+      topic: 'test',
+      time: 1001,
+    }]);
+    // const data = await ctx.service.dbUrlPool.update({
+    //   url: 'test1',
+    //   topic: 'test',
+    //   time: 10,
+    // }, {
+    //   id: 4,
+    // });
+    // const data = await ctx.service.dbUrlPool.update({
+    //   url: 'test1',
+    //   topic: 'test',
+    //   time: 10,
+    // }, {
+    //   id: 4,
+    // });
 
     const res = ctx.helper.response(data.status, data.headers, data.data);
     ctx.body = ctx.helper.responseData(res.body);
