@@ -52,9 +52,9 @@ class BendibaoService extends Service {
           el = el.replace(/\'/g, '"');
           const url = el.match(/href\=\"(.*)\"/g) ? el.match(/href\=\"(.*)\"/g)[0].replace(/\"/g, '').split('=')[1] : '';
           const topic = el.match(/\>(.*)\<\/a/g) ? el.match(/\>(.*)\<\/a/g)[0].replace(/\<\/a/i, '').replace(/\>/i, '') : '';
-          return {
+          return ctx.helper.dataAssign({
             url, topic,
-          };
+          });
         }
       });
     }

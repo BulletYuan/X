@@ -58,10 +58,10 @@ class News163Service extends Service {
         const topic = (el.title || '');
         const time = Math.floor(new Date(el.time || 0).getTime() / 1000);
         const thumb = el.imgurl || '';
-        // const keywords = el.keywords ? el.keywords.map(el => el.keyname).join(' ') : '';
+        const keywords = el.keywords ? el.keywords.map(el => el.keyname).join(' ') : '';
         data.push({
           url, topic, time, thumb,
-          // keywords,
+          keywords,
         });
       }
     }

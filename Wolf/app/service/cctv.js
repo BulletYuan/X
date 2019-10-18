@@ -30,7 +30,7 @@ class CctvService extends Service {
               digest: item.brief || '',
               thumb: item.image || '',
               time,
-              // keywords: item.keywords || '',
+              keywords: item.keywords || '',
             });
           }
         }

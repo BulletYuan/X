@@ -3,6 +3,25 @@
 const puppeteer = require('puppeteer');
 
 module.exports = {
+  async queue(datas, handlerSimple = function () { }, limit = 3, ...handlerArgs) {
+    const taskPrms = datas.map(el => {
+      return new Promise((res, rej) => {
+        const handlerReturn = handlerSimple.call(null, ...handlerArgs);
+        res(handlerReturn || false);
+      });
+    });
+    // return await Promise.all(taskPrms);
+    const results = await Promise.all(taskPrms);
+    return {
+      successed: results.length,
+      failed: taskPrms.length - results.length,
+    };
+  },
+  dataAssign(data) {
+    return Object.assign(
+      { url: '', topic: '', digest: '', thumb: '', keywords: '', time: 0 },
+      data);
+  },
   response(status = 200, headers = {}, body = []) {
     status = Number(status) || 200;
     headers = Object.keys(headers).length > 0 ? headers : {

@@ -66,7 +66,7 @@ class ChinanewsService extends Service {
         }
         data.push({
           url, topic, time,
-          // keywords,
+          keywords,
         });
       }
     }
