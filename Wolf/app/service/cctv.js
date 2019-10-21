@@ -24,14 +24,14 @@ class CctvService extends Service {
           for (let i = 0; i < list.length; i++) {
             const item = list[i];
             const time = Math.floor(new Date(item.focus_date || 0).getTime() / 1000);
-            data.push({
+            data.push(ctx.helper.dataAssign({
               url: item.url || '',
               topic: item.title || '',
               digest: item.brief || '',
               thumb: item.image || '',
               time,
               keywords: item.keywords || '',
-            });
+            }));
           }
         }
       }

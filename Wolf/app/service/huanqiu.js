@@ -21,9 +21,9 @@ class HuanqiuService extends Service {
         const link = news.match(/\<a(.*?)\<\/a/gi)[0];
         const url = link.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1];
         const topic = link.match(/\>(.*?)\</gi)[0].replace(/\>|\</g, '');
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, topic,
-        });
+        }));
       }
     }
     if (newList && newList.length > 0) {
@@ -40,9 +40,9 @@ class HuanqiuService extends Service {
           const link = news.match(/\<a(.*?)\<\/a/gi)[0];
           const url = link.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1];
           const topic = link.match(/\>(.*?)\</gi)[0].replace(/\>|\</g, '');
-          data.push({
+          data.push(ctx.helper.dataAssign({
             url, topic,
-          });
+          }));
         }
       }
     }

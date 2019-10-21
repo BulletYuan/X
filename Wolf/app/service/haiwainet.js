@@ -28,9 +28,9 @@ class HaiwaiService extends Service {
         } else {
           time = '';
         }
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, topic, time,
-        });
+        }));
       }
     }
     return {

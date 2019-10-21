@@ -3,10 +3,10 @@
 const puppeteer = require('puppeteer');
 
 module.exports = {
-  async queue(datas, handlerSimple = function () { }, limit = 3, ...handlerArgs) {
+  async queue(datas, handlerSimple = function (data) { }, limit = 3) {
     const taskPrms = datas.map(el => {
       return new Promise((res, rej) => {
-        const handlerReturn = handlerSimple.call(null, ...handlerArgs);
+        const handlerReturn = handlerSimple(el);
         res(handlerReturn || false);
       });
     });

@@ -19,9 +19,9 @@ class ChinanewsService extends Service {
         const link = list[i];
         const url = link.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1];
         const city = link.match(/\>(.*?)\</gi)[0].replace(/\>|\</g, '');
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, city,
-        });
+        }));
       }
     }
     return {
@@ -64,10 +64,10 @@ class ChinanewsService extends Service {
             time = Math.floor(new Date(time).getTime() / 1000);
           }
         }
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, topic, time,
           keywords,
-        });
+        }));
       }
     }
     return {
@@ -101,9 +101,9 @@ class ChinanewsService extends Service {
             time = Math.floor(new Date(time).getTime() / 1000);
           }
         }
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, topic, time,
-        });
+        }));
       }
     }
     return {
@@ -136,9 +136,9 @@ class ChinanewsService extends Service {
             time = Math.floor(new Date(time).getTime() / 1000);
           }
         }
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, topic, time,
-        });
+        }));
       }
     }
     return {

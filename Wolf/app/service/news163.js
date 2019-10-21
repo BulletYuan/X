@@ -4,7 +4,7 @@ const Service = require('egg').Service;
 const Iconv = require('iconv-lite');
 
 class News163Service extends Service {
-  async rank() {
+  async ranks() {
     const { ctx } = this;
     const result = await ctx.curl('http://news.163.com/rank/', {
       method: 'GET',
@@ -26,9 +26,9 @@ class News163Service extends Service {
         const topic = _con.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
         let watch = counts[j];
         watch = watch.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
-        data.push({
+        data.push(ctx.helper.dataAssign({
           no, url, topic, watch,
-        });
+        }));
       }
     }
     return {
@@ -59,10 +59,10 @@ class News163Service extends Service {
         const time = Math.floor(new Date(el.time || 0).getTime() / 1000);
         const thumb = el.imgurl || '';
         const keywords = el.keywords ? el.keywords.map(el => el.keyname).join(' ') : '';
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, topic, time, thumb,
           keywords,
-        });
+        }));
       }
     }
     return {
@@ -98,9 +98,9 @@ class News163Service extends Service {
       if (el.indexOf('news.') > 0 && el.indexOf('/' + year + '/') > 0 && el.indexOf('.html') > 0) {
         const url = el.match(/href\=\"(.*?)\"/gi)[0].replace(/\"/g, '').split('=')[1];
         const topic = el.match(/\>(.*?)\</gi)[0].replace(/\<|\>/g, '');
-        data.push({
+        data.push(ctx.helper.dataAssign({
           url, topic,
-        });
+        }));
       }
     }
     return {
