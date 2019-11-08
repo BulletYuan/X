@@ -1,16 +1,21 @@
 'use strict';
 
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
 
 module.exports = {
+  devLog: true,
+  async log(...msg) {
+    if (this.devLog) {
+      console.log(...msg);
+    }
+  },
   async queue(datas, handlerSimple = function (data) { }, limit = 3) {
     const taskPrms = datas.map(el => {
-      return new Promise((res, rej) => {
-        const handlerReturn = handlerSimple(el);
+      return new Promise(async (res, rej) => {
+        const handlerReturn = await handlerSimple(el);
         res(handlerReturn || false);
       });
     });
-    // return await Promise.all(taskPrms);
     const results = await Promise.all(taskPrms);
     return {
       successed: results.length,
@@ -18,6 +23,12 @@ module.exports = {
     };
   },
   dataAssign(data) {
+    if (typeof data.time !== 'number') {
+      data.time = Number(data.time);
+    }
+    if (isNaN(data.time)) {
+      data.time = 0;
+    }
     return Object.assign(
       { url: '', topic: '', digest: '', thumb: '', keywords: '', time: 0 },
       data);

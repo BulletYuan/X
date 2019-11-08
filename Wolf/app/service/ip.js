@@ -1,11 +1,13 @@
 'use strict';
 
 const Service = require('egg').Service;
+const urls = require('../common/urls');
 
 class IPService extends Service {
   async ip() {
     const { ctx } = this;
-    const result = await ctx.curl('http://2000019.ip138.com/', {
+    ctx.helper.log('ip', urls.ip.ip);
+    const result = await ctx.curl(urls.ip.ip, {
       method: 'GET',
       dataType: 'text',
     });

@@ -2,11 +2,13 @@
 
 const Service = require('egg').Service;
 const Iconv = require('iconv-lite');
+const urls = require('../common/urls');
 
 class News163Service extends Service {
   async ranks() {
     const { ctx } = this;
-    const result = await ctx.curl('http://news.163.com/rank/', {
+    ctx.helper.log('ranks', urls.news163.ranks);
+    const result = await ctx.curl(urls.news163.ranks, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -20,14 +22,16 @@ class News163Service extends Service {
     for (let i = 0; i < amount / 10; i++) {
       for (let j = 0; j < 10; j++) {
         const item = j < 3 ? red[3 * i + j] : gray[7 * i + (j - 3)];
-        const no = Number(item.match(/\<span\>(.*)\<\/span\>/gi)[0].replace(/span\>/g, '').replace(/\</g, '').replace('\/', ''));
+        // const no = Number(item.match(/\<span\>(.*)\<\/span\>/gi)[0].replace(/span\>/g, '').replace(/\</g, '').replace('\/', ''));
         const _con = item.match(/href\=\"(.*?)\<\/a/gi)[0].replace(/\'/g, '\"');
         const url = _con.match(/\"(.*?)\"/gi)[0].replace(/\"/g, '');
         const topic = _con.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
-        let watch = counts[j];
-        watch = watch.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
+        // let watch = counts[j];
+        // watch = watch.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
         data.push(ctx.helper.dataAssign({
-          no, url, topic, watch,
+          // no,
+          // watch,
+          url, topic,
         }));
       }
     }
@@ -38,7 +42,9 @@ class News163Service extends Service {
 
   async requestApi(kw = '', type = 'guonei') {
     const { ctx } = this;
-    const result = await ctx.curl('https://temp.163.com/special/00804KVA/cm_' + type + '.js?callback=' + kw, {
+    const url = urls.news163.requestApi + type + '.js?callback=' + kw;
+    ctx.helper.log(kw, type, url);
+    const result = await ctx.curl(url, {
       method: 'GET',
       gzip: true,
       headers: {
@@ -48,8 +54,13 @@ class News163Service extends Service {
     let content = result.data;
     content = Iconv.decode(new Buffer(content), 'gbk');
     content = content.toString();
-    let list = content.substring(kw.length + 1, content.length - 1);
-    list = JSON.parse(list);
+    let listOri = content.substring(kw.length + 1, content.length - 1);
+    let list = {};
+    try {
+      list = JSON.parse(listOri);
+    } catch (e) {
+      new Error('News163Service requestApi Error: ' + e + '\n' + listOri);
+    }
     const data = [];
     if (list && list.length > 0) {
       for (let i = 0; i < list.length; i++) {
@@ -70,13 +81,13 @@ class News163Service extends Service {
     };
   }
   async world() {
-    const data = await this.requestApi('data_callback', 'guoji');
+    const { data } = await this.requestApi('data_callback', 'guoji');
     return {
       data,
     };
   }
   async domestic() {
-    const data = await this.requestApi('data_callback');
+    const { data } = await this.requestApi('data_callback');
     return {
       data,
     };
@@ -84,7 +95,8 @@ class News163Service extends Service {
 
   async newest() {
     const { ctx } = this;
-    const result = await ctx.curl('http://news.163.com/world/', {
+    ctx.helper.log('newest', urls.news163.newest);
+    const result = await ctx.curl(urls.news163.newest, {
       method: 'GET',
       gzip: true,
       dataType: 'text',

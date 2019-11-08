@@ -1,11 +1,13 @@
 'use strict';
 
 const Service = require('egg').Service;
+const urls = require('../common/urls');
 
 class BendibaoService extends Service {
   async list() {
     const { ctx } = this;
-    const result = await ctx.curl('http://www.bendibao.com/city.htm', {
+    ctx.helper.log('bendibao.cities', urls.bendibao.cities);
+    const result = await ctx.curl(urls.bendibao.cities, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -40,6 +42,7 @@ class BendibaoService extends Service {
     let data = [];
     if (url) {
       url += 'news/';
+      ctx.helper.log('news', url);
       const result = await ctx.curl(url, {
         method: 'GET',
         gzip: true,

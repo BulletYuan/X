@@ -1,11 +1,13 @@
 'use strict';
 
 const Service = require('egg').Service;
+const urls = require('../common/urls');
 
 class HaiwaiService extends Service {
   async newest() {
     const { ctx } = this;
-    const result = await ctx.curl('http://news.haiwainet.cn/yuanchuang/', {
+    ctx.helper.log('newest', urls.haiwai.newest);
+    const result = await ctx.curl(urls.haiwai.newest, {
       method: 'GET',
       gzip: true,
       dataType: 'text',

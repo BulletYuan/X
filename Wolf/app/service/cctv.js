@@ -1,12 +1,15 @@
 'use strict';
 
 const Service = require('egg').Service;
+const urls = require('../common/urls');
 
 class CctvService extends Service {
   async requestApi(kw = '', page = 1) {
     const { ctx } = this;
-    const result = await ctx.curl('http://news.cctv.com/2019/07/gaiban/cmsdatainterface/page/' +
-      kw + '_' + page + '.jsonp?cb=t&cb=' + kw, {
+    const url = urls.cctv.api +
+      kw + '_' + page + '.jsonp?cb=t&cb=' + kw;
+    ctx.helper.log(kw, page, url);
+    const result = await ctx.curl(url, {
       method: 'GET',
       gzip: true,
     });
@@ -16,13 +19,18 @@ class CctvService extends Service {
     let data = [];
     let total = 0;
     if (content && content.substr(0, kw.length) === kw) {
-      let list = content.substring(kw.length + 1, content.length - 1);
-      list = JSON.parse(list);
+      let listOri = content.substring(kw.length + 1, content.length - 1);
+      let list = {};
+      try {
+        list = JSON.parse(listOri);
+      } catch (e) {
+        new Error('CctvService requestApi Error: ' + e + '\n' + listOri);
+      }
       if (list && list.data && list.data.list && list.data.total) {
         total = list.data.total;
-        if (list.length > 0) {
-          for (let i = 0; i < list.length; i++) {
-            const item = list[i];
+        if (list.data.list.length > 0) {
+          for (let i = 0; i < list.data.list.length; i++) {
+            const item = list.data.list[i];
             const time = Math.floor(new Date(item.focus_date || 0).getTime() / 1000);
             data.push(ctx.helper.dataAssign({
               url: item.url || '',

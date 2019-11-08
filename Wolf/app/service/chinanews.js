@@ -1,11 +1,13 @@
 'use strict';
 
 const Service = require('egg').Service;
+const urls = require('../common/urls');
 
 class ChinanewsService extends Service {
   async provinces() {
     const { ctx } = this;
-    const result = await ctx.curl('http://www.chinanews.com/', {
+    ctx.helper.log('provinces', urls.chinanews.provinces);
+    const result = await ctx.curl(urls.chinanews.provinces, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -31,7 +33,8 @@ class ChinanewsService extends Service {
 
   async newest() {
     const { ctx } = this;
-    const result = await ctx.curl('http://www.chinanews.com/scroll-news/news1.html', {
+    ctx.helper.log('newest', urls.chinanews.newest);
+    const result = await ctx.curl(urls.chinanews.newest, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -77,7 +80,8 @@ class ChinanewsService extends Service {
 
   async world() {
     const { ctx } = this;
-    const result = await ctx.curl('http://www.chinanews.com/world.shtml', {
+    ctx.helper.log('world', urls.chinanews.world);
+    const result = await ctx.curl(urls.chinanews.world, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -112,7 +116,8 @@ class ChinanewsService extends Service {
   }
   async domestic() {
     const { ctx } = this;
-    const result = await ctx.curl('http://www.chinanews.com/china.shtml', {
+    ctx.helper.log('domestic', urls.chinanews.domestic);
+    const result = await ctx.curl(urls.chinanews.domestic, {
       method: 'GET',
       gzip: true,
       dataType: 'text',

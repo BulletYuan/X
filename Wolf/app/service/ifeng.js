@@ -1,11 +1,13 @@
 'use strict';
 
 const Service = require('egg').Service;
+const urls = require('../common/urls');
 
 class IfengService extends Service {
   async ranks() {
     const { ctx } = this;
-    const result = await ctx.curl('http://news.ifeng.com/', {
+    ctx.helper.log('newest', urls.ifeng.ranks);
+    const result = await ctx.curl(urls.ifeng.ranks, {
       method: 'GET',
       gzip: true,
       dataType: 'text',

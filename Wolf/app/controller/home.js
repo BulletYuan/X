@@ -37,15 +37,15 @@ class HomeController extends Controller {
     //   topic: 'test',
     //   time: 100,
     // });
-    const data = await ctx.service.dbUrlPool.insertArray([{
-      url: 'test',
-      topic: 'test',
-      time: 1002,
-    }, {
-      url: 'test',
-      topic: 'test',
-      time: 1001,
-    }]);
+    // const data = await ctx.service.dbUrlPool.insertArray([{
+    //   url: 'test',
+    //   topic: 'test',
+    //   time: 1002,
+    // }, {
+    //   url: 'test',
+    //   topic: 'test',
+    //   time: 1001,
+    // }]);
     // const data = await ctx.service.dbUrlPool.update({
     //   url: 'test1',
     //   topic: 'test',
@@ -60,6 +60,8 @@ class HomeController extends Controller {
     // }, {
     //   id: 4,
     // });
+
+    const data = await ctx.service.grab.Urls();
 
     const res = ctx.helper.response(data.status, data.headers, data.data);
     ctx.body = ctx.helper.responseData(res.body);

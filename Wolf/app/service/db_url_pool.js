@@ -19,13 +19,14 @@ class UrlPoolService extends Service {
   async insert(values = {}) {
     const { app } = this;
     if (values && Object.keys(values).length > 0) {
-      const sql = 'INSERT INTO `url_pool` ( ' + Object.keys(values).map(el => el).join(' , ') + ' ) VALUES( ' + Object.values(values).map(el => (typeof el !== 'number' ? '"' + el + '"' : el)).join(' , ') + ' )';
+      const sql = 'INSERT INTO `url_pool` ( ' + Object.keys(values).map(el => el).join(' , ') + ' ) VALUES( ' + Object.values(values).map(el => (typeof el !== 'number' ? '"' + el.replace(/\"/g, '\'') + '"' : el)).join(' , ') + ' )';
       const result = await app.mysql.query(sql);
       if (result.affectedRows && result.affectedRows >= 1) {
         return { data: true };
       }
     }
     return { data: false };
+    // return { data: true };
   }
   async insertArray(valueArr = []) {
     const { app } = this;
