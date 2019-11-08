@@ -4,11 +4,11 @@ aside.left {
     border-right: 1px #aaa solid;
 }
 
-aside.left .cpt-list {
+aside.left .list {
     width: 100%;
 }
 
-aside.left .cpt-list li {
+aside.left .list li {
     width: 100%;
     padding: 15px 10px;
     border-bottom: 1px #aaa solid;
