@@ -1,0 +1,61 @@
+aside.left {
+    width: 200px;
+    background-color: #ddd;
+    border-right: 1px #aaa solid;
+}
+
+aside.left .cpt-list {
+    width: 100%;
+}
+
+aside.left .cpt-list li {
+    width: 100%;
+    padding: 15px 10px;
+    border-bottom: 1px #aaa solid;
+    cursor: pointer;
+}
+
+aside.left .cpt-list li:hover {
+    background-color: #eee;
+}
+
+article.container {
+    flex: 1;
+    padding: 10px;
+}
+
+aside.right {
+    width: 350px;
+    background-color: #eee;
+    border-left: 1px #aaa solid;
+}
+
+aside.right .content {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+aside.right .content .item {
+    margin-top: 10px;
+}
+
+.tab {
+    width: 100%;
+    display: flex;
+}
+
+.tab .tab-item {
+    flex: 1;
+    background-color: #ddd;
+    cursor: pointer;
+    padding: 15px 10px;
+    text-align: center;
+}
+
+.tab .tab-item:hover {
+    background-color: #fafafa;
+}
+
+.tab .tab-item.active {
+    background-color: #eee;
+}
