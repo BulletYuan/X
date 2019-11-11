@@ -1,6 +1,6 @@
 aside.left {
     width: 200px;
-    background-color: #ddd;
+    background-color: #eee;
     border-right: 1px #aaa solid;
 }
 
@@ -15,13 +15,25 @@ aside.left .list li {
     cursor: pointer;
 }
 
-aside.left .cpt-list li:hover {
-    background-color: #eee;
+aside.left .list li:hover {
+    background-color: #fafafa;
 }
 
-article.container {
+article.work-container {
     flex: 1;
+}
+
+article.work-container .top {
     padding: 10px;
+    background-color: #fff;
+    border-bottom: 1px #aaa solid;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+article.work-container .top p {
+    width: 150px;
 }
 
 aside.right {
@@ -36,6 +48,15 @@ aside.right .content {
 }
 
 aside.right .content .item {
+    margin-top: 10px;
+}
+
+aside.right .content .item label textarea,
+aside.right .content .item label input {
+    vertical-align: text-top;
+}
+
+aside.right .content .item div {
     margin-top: 10px;
 }
 
@@ -58,4 +79,15 @@ aside.right .content .item {
 
 .tab .tab-item.active {
     background-color: #eee;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    outline: none;
+    border: 1px #ddd solid;
+    border-radius: 3px;
+    background: #fff;
+    padding: 5px 10px;
 }
