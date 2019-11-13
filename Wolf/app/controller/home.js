@@ -1,6 +1,8 @@
 'use strict';
 
 const Controller = require('egg').Controller;
+const fs = require('fs');
+
 
 class HomeController extends Controller {
   async index() {
@@ -69,6 +71,7 @@ class HomeController extends Controller {
     Object.keys(res.headers).forEach(el => {
       ctx.set(el, res.headers[el]);
     });
+
   }
 }
 

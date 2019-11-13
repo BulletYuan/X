@@ -8,7 +8,7 @@ class CctvService extends Service {
     const { ctx } = this;
     const url = urls.cctv.api +
       kw + '_' + page + '.jsonp?cb=t&cb=' + kw;
-    ctx.helper.log(kw, page, url);
+    ctx.helper.log('CCTV' + kw, 'page:' + page, url);
     const result = await ctx.curl(url, {
       method: 'GET',
       gzip: true,
@@ -24,7 +24,8 @@ class CctvService extends Service {
       try {
         list = JSON.parse(listOri);
       } catch (e) {
-        new Error('CctvService requestApi Error: ' + e + '\n' + listOri);
+        ctx.helper.error('CctvService requestApi Error: ' + e);
+        new Error('CctvService requestApi Error: ' + e + '\n');
       }
       if (list && list.data && list.data.list && list.data.total) {
         total = list.data.total;

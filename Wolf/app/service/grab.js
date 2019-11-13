@@ -33,6 +33,7 @@ class GrabService extends Service {
 
     async Urls() {
         const { ctx } = this;
+        ctx.helper.log('GRAB URL BEGIN');
         const {
             city,
         } = await ctx.service.ip.ip(); // done
@@ -71,7 +72,7 @@ class GrabService extends Service {
         amount += chinanewsWorld.data.length;
         amount += chinanewsDomestic.data.length;
 
-        ctx.helper.log('ifentRanks', ifentRanks.data ? ifentRanks.data.length : 0);
+        ctx.helper.log('ifengRanks', ifentRanks.data ? ifentRanks.data.length : 0);
         ctx.helper.log('bendibao', bendibao.data ? bendibao.data.length : 0);
         ctx.helper.log('news163Ranks', news163Ranks.data ? news163Ranks.data.length : 0);
         ctx.helper.log('cctvNews', cctvNews.data ? cctvNews.data.length : 0);
@@ -106,7 +107,13 @@ class GrabService extends Service {
             successed,
             failed: amount - successed
         }
+        ctx.helper.log('GRAB URL RESULT', 'amount : ' + amount, 'successed : ' + data.successed, 'failed : ' + data.failed);
         return { data };
+    }
+
+    async Pages() {
+        const { ctx } = this;
+        ctx.helper.log('GRAB PAGE BEGIN');
     }
 }
 module.exports = GrabService;

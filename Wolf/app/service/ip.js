@@ -18,6 +18,9 @@ class IPService extends Service {
     city = city.split('：')[1];
     const server = city.split(' ')[1];
     city = city.split(' ')[0];
+    ctx.helper.log('IP INFO', ip,
+      city,
+      server);
     return {
       ip,
       city,

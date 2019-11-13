@@ -19,6 +19,9 @@ class UrlPoolService extends Service {
   async insert(values = {}) {
     const { app } = this;
     if (values && Object.keys(values).length > 0) {
+      values = Object.assign(values, {
+        createTime: Math.floor(new Date().getTime() / 1000)
+      });
       const sql = 'INSERT INTO `url_pool` ( ' + Object.keys(values).map(el => el).join(' , ') + ' ) VALUES( ' + Object.values(values).map(el => (typeof el !== 'number' ? '"' + el.replace(/\"/g, '\'') + '"' : el)).join(' , ') + ' )';
       const result = await app.mysql.query(sql);
       if (result.affectedRows && result.affectedRows >= 1) {

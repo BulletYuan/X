@@ -59,7 +59,8 @@ class News163Service extends Service {
     try {
       list = JSON.parse(listOri);
     } catch (e) {
-      new Error('News163Service requestApi Error: ' + e + '\n' + listOri);
+      ctx.helper.error('News163Service requestApi Error: ' + e);
+      new Error('News163Service requestApi Error: ' + e + '\n');
     }
     const data = [];
     if (list && list.length > 0) {

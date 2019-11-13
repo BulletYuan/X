@@ -42,7 +42,7 @@ class BendibaoService extends Service {
     let data = [];
     if (url) {
       url += 'news/';
-      ctx.helper.log('news', url);
+      ctx.helper.log('Bendibao news', url);
       const result = await ctx.curl(url, {
         method: 'GET',
         gzip: true,

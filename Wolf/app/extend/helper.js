@@ -1,13 +1,39 @@
 'use strict';
 
 // const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 module.exports = {
   devLog: true,
+  async noting(title = 'default logging', content) {
+    const logsDir = __dirname + '/../../logs';
+    const logsFile = 'grab_url_logs';
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir);
+    }
+    if (!fs.existsSync(logsDir + '/' + logsFile)) {
+      fs.writeFileSync(logsDir + '/' + logsFile, '===== Create Log File at ' + new Date().toLocaleString() + ' ===== \n \n', {
+        encoding: 'utf8',
+        flag: 'a',
+      });
+    }
+    fs.writeFileSync(logsDir + '/' + logsFile, '===== Logging ' + title + ' at ' + new Date().toLocaleString() + ' ===== \n' + content + '\n', {
+      encoding: 'utf8',
+      flag: 'a',
+    });
+  },
   async log(...msg) {
     if (this.devLog) {
       console.log(...msg);
     }
+    const title = msg.splice(0, 1);
+    this.noting(title, msg.join('\n'));
+  },
+  async error(...msg) {
+    if (this.devLog) {
+      console.error(...msg);
+    }
+    this.noting('ERROR LOGGING', msg.join('\n'));
   },
   async queue(datas, handlerSimple = function (data) { }, limit = 3) {
     const taskPrms = datas.map(el => {
@@ -77,35 +103,35 @@ module.exports = {
     };
   },
 
-  Browser: null,
-  async getBrowser() {
-    if (!this.Browser) {
-      this.Browser = await puppeteer.launch();
-    }
-    return this.Browser;
-  },
-  async closeBrowser() {
-    if (this.Browser) {
-      await this.Browser.close();
-      this.Browser = null;
-    }
-  },
-  async getPage(url) {
-    const page = await this.Browser.newPage();
-    await page.goto(url);
-    return page;
-  },
-  async closePage(page) {
-    if (page && page instanceof puppeteer.Page) {
-      await page.close();
-    }
-  },
-  async closeAllPages() {
-    if (this.Browser) {
-      const pages = await this.Browser.pages();
-      pages.forEach(async page => {
-        await page.close();
-      });
-    }
-  },
+  // Browser: null,
+  // async getBrowser() {
+  //   if (!this.Browser) {
+  //     this.Browser = await puppeteer.launch();
+  //   }
+  //   return this.Browser;
+  // },
+  // async closeBrowser() {
+  //   if (this.Browser) {
+  //     await this.Browser.close();
+  //     this.Browser = null;
+  //   }
+  // },
+  // async getPage(url) {
+  //   const page = await this.Browser.newPage();
+  //   await page.goto(url);
+  //   return page;
+  // },
+  // async closePage(page) {
+  //   if (page && page instanceof puppeteer.Page) {
+  //     await page.close();
+  //   }
+  // },
+  // async closeAllPages() {
+  //   if (this.Browser) {
+  //     const pages = await this.Browser.pages();
+  //     pages.forEach(async page => {
+  //       await page.close();
+  //     });
+  //   }
+  // },
 };
