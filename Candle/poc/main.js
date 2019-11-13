@@ -1,15 +1,19 @@
-const templates = {
+var templates = {
     component: [
         {
             name: 'p1',
             label: '正文标签1',
-            html: `<p class="p1">正文标签1</p>`,
+            element: 'p',
+            html: `正文标签1`,
             style: `
                 p.p1{
                     font-size:18px;
                     font-weight:bold;
                 }
             `,
+            attr: {
+                'class': 'p1'
+            }
         },
         {
             name: 'p2',
@@ -55,6 +59,7 @@ const templates = {
                     cursor:pointer;
                 }
 
+                *.drop,
                 .layout-template:hover,
                 .component-template:hover{
                     border:2px #599eff solid;
@@ -93,19 +98,9 @@ function titleChanged(el) {
     refreshWorkIframe();
 }
 
-function dragStart(ev) {
-    console.log('dragStart', ev);
-    ev.dataTransfer.setData('element', ev.currentTarget)
-}
-function dragEnd(ev) {
-    console.log('dragEnd', ev);
-}
-function draging(ev) {
-    // console.log('draging', ev);
-}
-function dropDown(ev) {
-    ev.preventDefault();
-    console.log('dropDown', ev);
+function dragStart(ev, i) {
+    // console.log('dragStart', ev);
+    ev.dataTransfer.setData('_cpt', i)
 }
 
 // changing template tabs
@@ -129,7 +124,7 @@ function initTemplatesList(type = 0) {
     const tplt = templates[tmpKeys[type]];
     for (let i = 0; i < tplt.length; i++) {
         const item = tplt[i];
-        listHtml += '<li ondrag="dragStart(event)" draggable="true">' + item.label + '</li>';
+        listHtml += '<li ondragstart="dragStart(event,' + i + ')" draggable="true">' + item.label + '</li>';
     }
     listDom.innerHTML = listHtml;
 }
@@ -155,21 +150,22 @@ function setMetas(workIframeDom, metas = []) {
         workIframeDom.head.append(metaDom);
     }
 }
+function setScripts(elDom, scripts = []) {
+    for (let i = 0; i < scripts.length; i++) {
+        const script = scripts[i];
+        let scriptDom = elDom.createElement('script');
+        scriptDom.innerHTML = script.toString();
+        elDom.head.append(scriptDom);
+    }
+}
 function setLayout(layout = templates.layout[0]) {
     if (!workIframeDom || !workIframeCtx) return;
     let body = workIframeDom.querySelector('body');
     if (!body) {
         body = workIframeDom.createElement('body');
-        body.setAttribute('class', 'layout-template');
-        body.addEventListener('dragover', function (event) {
-            event.preventDefault();
-            console.log('dragover');
-        });
-        body.addEventListener('drop', function (event) {
-            console.log('dragover', event.dataTransfer.getData('element'));
-        });
         workIframeDom.append(body);
     }
+    body.setAttribute('class', 'layout-template');
     body.innerHTML = layout.html;
 
     setMetas(workIframeDom, [
@@ -194,6 +190,22 @@ function refreshWorkIframe() {
         <html !doctype>
         ${workIframeDom.head.outerHTML}
         ${workIframeDom.body.outerHTML}
+
+        <script>
+        function dragover(event){
+            event.preventDefault();
+        }
+        function drop(event){
+            event.preventDefault();
+            const i = Number(event.dataTransfer.getData('_cpt'));
+            const tc=window.parent.templates.component[i]
+            console.log('drop',tc.html);
+            console.log(event.currentTarget);
+        }
+
+        document.body.addEventListener('dragover', dragover);
+        document.body.addEventListener('drop', drop);
+        </script>
         </html>
     `;
     workIframeDom.designMode = 'on';
