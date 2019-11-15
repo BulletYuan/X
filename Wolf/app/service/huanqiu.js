@@ -7,7 +7,7 @@ class HuanqiuService extends Service {
   async newest() {
     const { ctx } = this;
     ctx.helper.log('newest', urls.huanqiu.newest);
-    const result = await ctx.curl(urls.huanqiu.newest, {
+    const result = await ctx.helper.curl(urls.huanqiu.newest, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -48,6 +48,64 @@ class HuanqiuService extends Service {
         }
       }
     }
+    return {
+      data,
+    };
+  }
+
+  async newsPage(url) {
+    const { ctx } = this;
+    ctx.helper.log('Huanqiu news PAGE', url);
+    const result = await ctx.helper.curl(url, {
+      method: 'GET',
+      gzip: true,
+      dataType: 'text',
+    });
+    const page = result.data;
+    let topic = page.match(/\<div class\=\"t\-container\-title\"(([\s\S])*?)\<\/div\>/gi) || [];
+    let leads = page.match(/<div id\=\"wechat\-summary\"(([\s\S])*?)\<\/div\>/gi);
+    let content = page.match(/\<section data\-type\=\"rtext\"(([\s\S])*?)\<\/section\>/gi) || [];
+    const htmlReg = /<script(([\s\S])*?)\<\/script>|<[^>]*>/gi;
+    const imgReg = /\<img(.*?)\>/gi;
+    const vidReg = /\<video(.*?)\>/gi;
+    if (topic) {
+      topic = topic[0] || '';
+      topic = topic.replace(htmlReg, '');
+    }
+    if (leads) {
+      leads = leads[0] || '';
+      leads = leads.replace(htmlReg, '');
+    }
+    if (content) {
+      content = content[0] || '';
+      const imgsOri = content.match(imgReg) || [];
+      const imgs = imgsOri.map((el, i) => {
+        let name = el.match(/alt\=\"(.*?)\"/gi) || '';
+        let src = el.match(/src\=\"(.*?)\"/gi) || '';
+        name = name[0] ? name[0].split('=')[1].replace(/\"|\'/gi, '') : ('image' + i);
+        src = src[0] ? src[0].split('=')[1].replace(/\"|\'/gi, '') : '';
+        return `[${name}](${src})`;
+      });
+      imgsOri.forEach((el, i) => {
+        content = content.replace(el, (imgs[i] || ''));
+      });
+      const vidsOri = content.match(vidReg) || [];
+      const vids = vidsOri.map((el, i) => {
+        let name = el.match(/alt\=\"(.*?)\"/gi) || '';
+        let src = el.match(/src\=\"(.*?)\"/gi) || '';
+        name = name[0] ? name[0].split('=')[1].replace(/\"|\'/gi, '') : ('video' + i);
+        src = src[0] ? src[0].split('=')[1].replace(/\"|\'/gi, '') : '';
+        return `[${name}](${src})`;
+      });
+      vidsOri.forEach((el, i) => {
+        content = content.replace(el, (vids[i] || ''));
+      });
+      content = content.replace(htmlReg, '\n');
+    }
+    const data = ctx.helper.pageAssign({
+      topic, leads, content
+    });
+    ctx.helper.log('Huanqiu news PAGE DONE', topic, data.hash);
     return {
       data,
     };

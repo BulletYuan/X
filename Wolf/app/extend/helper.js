@@ -1,6 +1,7 @@
 'use strict';
 
 // const puppeteer = require('puppeteer');
+const crypto = require('crypto');
 const fs = require('fs');
 
 module.exports = {
@@ -30,10 +31,11 @@ module.exports = {
     this.noting(title, msg.join('\n'));
   },
   async error(...msg) {
+    console.log(msg.length)
     if (this.devLog) {
       console.error(...msg);
     }
-    this.noting('ERROR LOGGING', msg.join('\n'));
+    // this.noting('ERROR LOGGING', msg.join('\n'));
   },
   async queue(datas, handlerSimple = function (data) { }, limit = 3) {
     const taskPrms = datas.map(el => {
@@ -57,6 +59,16 @@ module.exports = {
     }
     return Object.assign(
       { url: '', topic: '', digest: '', thumb: '', keywords: '', time: 0 },
+      data);
+  },
+  pageAssign(data) {
+    let hash = this.crypto('', 'sha256');
+    if (data && !data['hash']) {
+      hash = this.crypto((data['content'] || ''), 'sha256');
+      data['hash'] = hash;
+    }
+    return Object.assign(
+      { topic: '', leads: '', content: '' },
       data);
   },
   response(status = 200, headers = {}, body = []) {
@@ -101,6 +113,25 @@ module.exports = {
         action,
       },
     };
+  },
+
+  async curl(url, option = {
+    method: 'GET',
+    gzip: true,
+    dataType: 'text',
+  }) {
+    const { ctx } = this;
+    try {
+      return await ctx.curl(url, option);
+    } catch (e) {
+      this.error('HTTP Requesting ' + url + ' Error : \n' + e.toString());
+    }
+    return { data: '' };
+  },
+  crypto(data = '', type = 'md5') {
+    const hsh = crypto.createHash(type);
+    hsh.update(data);
+    return hsh.digest('hex');
   },
 
   // Browser: null,

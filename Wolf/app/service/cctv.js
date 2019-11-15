@@ -9,7 +9,7 @@ class CctvService extends Service {
     const url = urls.cctv.api +
       kw + '_' + page + '.jsonp?cb=t&cb=' + kw;
     ctx.helper.log('CCTV' + kw, 'page:' + page, url);
-    const result = await ctx.curl(url, {
+    const result = await ctx.helper.curl(url, {
       method: 'GET',
       gzip: true,
     });
@@ -123,6 +123,62 @@ class CctvService extends Service {
         data = data.concat(...datas);
       }
     }
+    return {
+      data,
+    };
+  }
+
+  async newsPage(url) {
+    const { ctx } = this;
+    url = url.replace('shtml', 'xml');
+    ctx.helper.log('CCTV news PAGE', url);
+    const result = await ctx.helper.curl(url, {
+      method: 'GET',
+      gzip: true,
+      dataType: 'text',
+    });
+    const page = result.data;
+    let topic = '';
+    let leads = '';
+    let content = '';
+    let isPhoto = url.indexOf('photo') >= 0;
+    if (isPhoto) {
+      topic = page.match(/title\=\"(.*?)\"/gi)[0].split('=')[1].replace(/\"|\'/gi, '');
+      let imgs = page.match(/photourl\=\"(.*?)\"/gi) || [];
+      let desc = page.match(/\<\!\[CDATA\[(.*?)\]\]>/gi) || [];
+      content = imgs.map((el, i) => {
+        return `${desc[i].replace(/\[|\]|\<|\>|CDATA|\!/gi, '')}\n[image${i}](${el.split('=')[1].replace(/\"|\'/gi, '')})`;
+      }).join('\n');
+    } else {
+      topic = page.match(/\<title(([\s\S])*?)\<\/title\>/gi) || [];
+      leads = page.match(/\<desc(([\s\S])*?)\<\/desc\>/gi) || [];
+      content = page.match(/\<content(([\s\S])*?)\<\/content\>/gi) || [];
+    }
+    if (content && !isPhoto) {
+      topic = topic[0].replace(/\]\>|\[|\]|CDATA|\<\!/gi, '');
+      leads = leads[0].replace(/\]\>|\[|\]|CDATA|\<\!/gi, '');
+      content = content[0].replace(/\]\>|\[|\]|CDATA|\<\!/gi, '');
+      const htmlReg = /<script(([\s\S])*?)\<\/script>|<[^>]*>/gi;
+      const imgReg = /\<img(.*?)\>/gi;
+      const imgsOri = content.match(imgReg) || [];
+      const imgs = imgsOri.map((el, i) => {
+        let name = el.match(/alt\=\"(.*?)\"/gi) || '';
+        let src = el.match(/src\=\"(.*?)\"/gi) || '';
+        name = name[0] ? name[0].split('=')[1].replace(/\"|\'/gi, '') : ('image' + i);
+        src = (src[0] || '').split('=')[1].replace(/\"|\'/gi, '');
+        return `[${name}](${src})`;
+      });
+      imgsOri.forEach((el, i) => {
+        content = content.replace(el, imgs[i] || '');
+      });
+      topic = topic.replace(htmlReg, '');
+      leads = leads.replace(htmlReg, '');
+      content = content.replace(htmlReg, '\n');
+    }
+    const data = ctx.helper.pageAssign({
+      topic, leads, content
+    });
+    ctx.helper.log('CCTV news PAGE DONE', topic, data.hash);
     return {
       data,
     };

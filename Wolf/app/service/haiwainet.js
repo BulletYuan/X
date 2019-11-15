@@ -7,7 +7,7 @@ class HaiwaiService extends Service {
   async newest() {
     const { ctx } = this;
     ctx.helper.log('newest', urls.haiwai.newest);
-    const result = await ctx.curl(urls.haiwai.newest, {
+    const result = await ctx.helper.curl(urls.haiwai.newest, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -35,6 +35,52 @@ class HaiwaiService extends Service {
         }));
       }
     }
+    return {
+      data,
+    };
+  }
+
+  async newsPage(url) {
+    const { ctx } = this;
+    ctx.helper.log('Haiwainet news PAGE', url);
+    const result = await ctx.helper.curl(url, {
+      method: 'GET',
+      gzip: true,
+      dataType: 'text',
+    });
+    const page = result.data;
+    let topic = page.match(/\<h1 class\=\"show_wholetitle\"(([\s\S])*?)\<\/h1\>/gi) || [];
+    let leads = page.match(/\<h2 class\=\"(show_contentitle|show_shorttitle)\"(([\s\S])*?)\<\/h2\>/gi) || [];
+    let content = page.match(/\<div class\=\"contentMain\"(([\s\S])*?)\<\/div\>/gi) || [];
+    const htmlReg = /<script(([\s\S])*?)\<\/script>|<[^>]*>/gi;
+    const imgReg = /\<img(.*?)\>/gi;
+    if (topic) {
+      topic = topic[0] || '';
+      topic = topic.replace(htmlReg, '');
+    }
+    if (leads) {
+      leads = leads[0] + leads[1] || '';
+      leads = leads.replace(htmlReg, '');
+    }
+    if (content) {
+      content = content[0] || '';
+      const imgsOri = content.match(imgReg) || [];
+      const imgs = imgsOri.map((el, i) => {
+        let name = el.match(/alt\=\"(.*?)\"/gi) || '';
+        let src = el.match(/src\=\"(.*?)\"/gi) || '';
+        name = name[0] ? name[0].split('=')[1].replace(/\"|\'/gi, '') : ('image' + i);
+        src = (src[0] || '').split('=')[1].replace(/\"|\'/gi, '');
+        return `[${name}](${src})`;
+      });
+      imgsOri.forEach((el, i) => {
+        content = content.replace(el, (imgs[i] || ''));
+      });
+      content = content.replace(htmlReg, '\n');
+    }
+    const data = ctx.helper.pageAssign({
+      topic, leads, content
+    });
+    ctx.helper.log('Haiwainet news PAGE DONE', topic, data.hash);
     return {
       data,
     };

@@ -7,7 +7,7 @@ class ChinanewsService extends Service {
   async provinces() {
     const { ctx } = this;
     ctx.helper.log('provinces', urls.chinanews.provinces);
-    const result = await ctx.curl(urls.chinanews.provinces, {
+    const result = await ctx.helper.curl(urls.chinanews.provinces, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -34,7 +34,7 @@ class ChinanewsService extends Service {
   async newest() {
     const { ctx } = this;
     ctx.helper.log('newest', urls.chinanews.newest);
-    const result = await ctx.curl(urls.chinanews.newest, {
+    const result = await ctx.helper.curl(urls.chinanews.newest, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -81,7 +81,7 @@ class ChinanewsService extends Service {
   async world() {
     const { ctx } = this;
     ctx.helper.log('world', urls.chinanews.world);
-    const result = await ctx.curl(urls.chinanews.world, {
+    const result = await ctx.helper.curl(urls.chinanews.world, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -117,7 +117,7 @@ class ChinanewsService extends Service {
   async domestic() {
     const { ctx } = this;
     ctx.helper.log('domestic', urls.chinanews.domestic);
-    const result = await ctx.curl(urls.chinanews.domestic, {
+    const result = await ctx.helper.curl(urls.chinanews.domestic, {
       method: 'GET',
       gzip: true,
       dataType: 'text',
@@ -146,6 +146,47 @@ class ChinanewsService extends Service {
         }));
       }
     }
+    return {
+      data,
+    };
+  }
+
+  async newsPage(url) {
+    const { ctx } = this;
+    ctx.helper.log('Chinanews news PAGE', url);
+    const result = await ctx.helper.curl(url, {
+      method: 'GET',
+      gzip: true,
+      dataType: 'text',
+    });
+    const page = result.data;
+    let topic = page.match(/\<h1(([\s\S])*?)\<\/h1\>/gi) || [];
+    let content = page.match(/\<div class\=\"left_zw\"(([\s\S])*?)\<\/div\>/gi) || [];
+    const htmlReg = /<script(([\s\S])*?)\<\/script>|<[^>]*>/gi;
+    const imgReg = /\<img(.*?)\>/gi;
+    if (topic) {
+      topic = topic[0] || '';
+      topic = topic.replace(htmlReg, '');
+    }
+    if (content) {
+      content = content[0] || '';
+      const imgsOri = content.match(imgReg) || [];
+      const imgs = imgsOri.map((el, i) => {
+        let name = el.match(/alt\=\"(.*?)\"/gi) || '';
+        let src = el.match(/src\=\"(.*?)\"/gi) || '';
+        name = name[0] ? name[0].split('=')[1].replace(/\"|\'/gi, '') : ('image' + i);
+        src = (src[0] || '').split('=')[1].replace(/\"|\'/gi, '');
+        return `[${name}](${src})`;
+      });
+      imgsOri.forEach((el, i) => {
+        content = content.replace(el, (imgs[i] || ''));
+      });
+      content = content.replace(htmlReg, '\n');
+    }
+    const data = ctx.helper.pageAssign({
+      topic, content
+    });
+    ctx.helper.log('Chinanews news PAGE DONE', topic, data.hash);
     return {
       data,
     };

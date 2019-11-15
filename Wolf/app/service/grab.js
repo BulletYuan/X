@@ -111,9 +111,17 @@ class GrabService extends Service {
         return { data };
     }
 
-    async Pages() {
+    async Page() {
         const { ctx } = this;
         ctx.helper.log('GRAB PAGE BEGIN');
+
+        const successed = await this.statis(result);
+        const data = {
+            successed,
+            failed: amount - successed
+        }
+        ctx.helper.log('GRAB PAGE RESULT', 'amount : ' + amount, 'successed : ' + data.successed, 'failed : ' + data.failed);
+        return { data };
     }
 }
 module.exports = GrabService;

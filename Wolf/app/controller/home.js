@@ -63,7 +63,17 @@ class HomeController extends Controller {
     //   id: 4,
     // });
 
-    const data = await ctx.service.grab.Urls();
+    // const data = await ctx.service.grab.Urls(); // done
+
+    // const data = await ctx.service.bendibao.newsPage('http://cd.bendibao.com/news/2019924/105087.shtm'); // done
+    // const data = await ctx.service.cctv.newsPage('http://news.cctv.com/2019/11/07/ARTIDwNZALOOPiybO58QydIH191107.shtml'); // done
+    // const data = await ctx.service.cctv.newsPage('http://photo.cctv.com/2019/11/08/PHOASBIfocWCtxSqzCMiQ8WG191108.shtml#NzfJx7SI6ZQP191108_1'); // done
+    // const data = await ctx.service.cctv.newsPage('http://military.cctv.com/2019/11/01/ARTI3kJYxPeYvYEqaiiBNBdj191101.shtml'); // done
+    // const data = await ctx.service.chinanews.newsPage('http://www.chinanews.com/hr/2019/11-14/9007287.shtml'); // done
+    // const data = await ctx.service.haiwainet.newsPage('http://news.haiwainet.cn/n/2019/1108/c3541093-31660684.html'); // done
+    // const data = await ctx.service.huanqiu.newsPage('https://finance.huanqiu.com/article/7RqFgJ6D9II'); // done
+    // const data = await ctx.service.ifeng.newsPage('https://news.ifeng.com/c/7rP4sebFw4D'); // done
+    const data = await ctx.service.news163.newsPage('https://news.163.com/19/1107/01/ETBI599P0001875P.html'); // done
 
     const res = ctx.helper.response(data.status, data.headers, data.data);
     ctx.body = ctx.helper.responseData(res.body);

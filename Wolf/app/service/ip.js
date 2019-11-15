@@ -7,7 +7,7 @@ class IPService extends Service {
   async ip() {
     const { ctx } = this;
     ctx.helper.log('ip', urls.ip.ip);
-    const result = await ctx.curl(urls.ip.ip, {
+    const result = await ctx.helper.curl(urls.ip.ip, {
       method: 'GET',
       dataType: 'text',
     });
