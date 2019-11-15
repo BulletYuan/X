@@ -15,7 +15,7 @@ module.exports = {
     if (!fs.existsSync(logsDir + '/' + logsFile)) {
       fs.writeFileSync(logsDir + '/' + logsFile, '===== Create Log File at ' + new Date().toLocaleString() + ' ===== \n \n', {
         encoding: 'utf8',
-        flag: 'a',
+        flag: 'w+',
       });
     }
     fs.writeFileSync(logsDir + '/' + logsFile, '===== Logging ' + title + ' at ' + new Date().toLocaleString() + ' ===== \n' + content + '\n', {
@@ -35,7 +35,31 @@ module.exports = {
     if (this.devLog) {
       console.error(...msg);
     }
-    // this.noting('ERROR LOGGING', msg.join('\n'));
+    this.noting('ERROR LOGGING', msg.join('\n'));
+  },
+  async contentFile(filename, content) {
+    const contentDir = __dirname + '/../../content_files';
+    if (!fs.existsSync(contentDir)) {
+      fs.mkdirSync(contentDir);
+    }
+    content = JSON.stringify(content);
+    if (content.charAt(0) !== '{') {
+      content = '{' + content + '}';
+    }
+    this.log('Ready to Write Content:\n' + filename);
+    return new Promise((res, rej) => {
+      try {
+        fs.writeFileSync(contentDir + '/' + filename, content, {
+          encoding: 'utf8',
+          flag: 'w+',
+        });
+        this.log('Write Content File:\n' + filename + ' Done!');
+        res(true);
+      } catch (e) {
+        this.error('Content File' + filename + '  Writting Error : \n' + e.toString());
+        res(false);
+      }
+    });
   },
   async queue(datas, handlerSimple = function (data) { }, limit = 3) {
     const taskPrms = datas.map(el => {

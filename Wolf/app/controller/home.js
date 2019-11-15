@@ -30,16 +30,16 @@ class HomeController extends Controller {
     // const data = await ctx.service.chinanews.world(); // done
     // const data = await ctx.service.chinanews.domestic(); // done
 
-    // const data = await ctx.service.dbUrlPool.find({
+    // const data = await ctx.service.dbService.find({
     //   topic: 'test',
     //   state: 0,
     // });
-    // const data = await ctx.service.dbUrlPool.insert({
+    // const data = await ctx.service.dbService.insert({
     //   url: 'test',
     //   topic: 'test',
     //   time: 100,
     // });
-    // const data = await ctx.service.dbUrlPool.insertArray([{
+    // const data = await ctx.service.dbService.insertArray([{
     //   url: 'test',
     //   topic: 'test',
     //   time: 1002,
@@ -48,14 +48,14 @@ class HomeController extends Controller {
     //   topic: 'test',
     //   time: 1001,
     // }]);
-    // const data = await ctx.service.dbUrlPool.update({
+    // const data = await ctx.service.dbService.update({
     //   url: 'test1',
     //   topic: 'test',
     //   time: 10,
     // }, {
     //   id: 4,
     // });
-    // const data = await ctx.service.dbUrlPool.update({
+    // const data = await ctx.service.dbService.update({
     //   url: 'test1',
     //   topic: 'test',
     //   time: 10,
@@ -73,7 +73,9 @@ class HomeController extends Controller {
     // const data = await ctx.service.haiwainet.newsPage('http://news.haiwainet.cn/n/2019/1108/c3541093-31660684.html'); // done
     // const data = await ctx.service.huanqiu.newsPage('https://finance.huanqiu.com/article/7RqFgJ6D9II'); // done
     // const data = await ctx.service.ifeng.newsPage('https://news.ifeng.com/c/7rP4sebFw4D'); // done
-    const data = await ctx.service.news163.newsPage('https://news.163.com/19/1107/01/ETBI599P0001875P.html'); // done
+    // const data = await ctx.service.news163.newsPage('https://news.163.com/19/1107/01/ETBI599P0001875P.html'); // done
+
+    const data = await ctx.service.grab.Page(); // done
 
     const res = ctx.helper.response(data.status, data.headers, data.data);
     ctx.body = ctx.helper.responseData(res.body);

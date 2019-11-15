@@ -1,6 +1,7 @@
 'use strict';
 
 const Service = require('egg').Service;
+const Urls = require('../common/urls');
 
 class GrabService extends Service {
 
@@ -26,7 +27,7 @@ class GrabService extends Service {
         const { ctx } = this;
         if (Object.prototype.toString.call(datas).indexOf('Object') >= 0 && datas.data && datas.data.length > 0) {
             return await ctx.helper.queue(datas.data, async (data) => {
-                return await ctx.service.dbUrlPool.insert(data)
+                return await ctx.service.dbService.insert(data)
             });
         }
     }
@@ -111,17 +112,132 @@ class GrabService extends Service {
         return { data };
     }
 
+    async pageStatis(result) {
+        const { ctx } = this;
+        let successed = 0;
+        const resArr = await Promise.all(result);
+        return resArr.reduce((old, cur) => old + Number(cur), 0);
+    }
+    async pagesInsert(datas) {
+        const { ctx } = this;
+        if (Object.prototype.toString.call(datas).indexOf('Object') >= 0 && datas.data && datas.data.length > 0) {
+            return await ctx.helper.queue(datas.data, async (data) => {
+                return await ctx.service.dbService.insert(data)
+            });
+        }
+    }
+    async pageAdaptor(url) {
+        const { ctx } = this;
+        if (url.indexOf(Urls.bendibao.host) >= 0) {
+            ctx.helper.log('PAGE Aaptor With:' + Urls.bendibao.host);
+            return await ctx.service.bendibao.newsPage(url);
+        } else if (url.indexOf(Urls.cctv.host) >= 0) {
+            ctx.helper.log('PAGE Aaptor With:' + Urls.cctv.host);
+            return await ctx.service.cctv.newsPage(url);
+        } else if (url.indexOf(Urls.chinanews.host) >= 0) {
+            ctx.helper.log('PAGE Aaptor With:' + Urls.chinanews.host);
+            return await ctx.service.chinanews.newsPage(url);
+        } else if (url.indexOf(Urls.haiwai.host) >= 0) {
+            ctx.helper.log('PAGE Aaptor With:' + Urls.haiwai.host);
+            return await ctx.service.haiwai.newsPage(url);
+        } else if (url.indexOf(Urls.huanqiu.host) >= 0) {
+            ctx.helper.log('PAGE Aaptor With:' + Urls.huanqiu.host);
+            return await ctx.service.huanqiu.newsPage(url);
+        } else if (url.indexOf(Urls.ifeng.host) >= 0) {
+            ctx.helper.log('PAGE Aaptor With:' + Urls.ifeng.host);
+            return await ctx.service.ifeng.newsPage(url);
+        } else if (url.indexOf(Urls.news163.host) >= 0) {
+            ctx.helper.log('PAGE Aaptor With:' + Urls.news163.host);
+            return await ctx.service.news163.newsPage(url);
+        }
+    }
     async Page() {
         const { ctx } = this;
         ctx.helper.log('GRAB PAGE BEGIN');
-
-        const successed = await this.statis(result);
-        const data = {
-            successed,
-            failed: amount - successed
+        const limit = 30;
+        const urlField = await ctx.service.dbService.find(
+            [
+                'id', 'url',
+            ], {
+                state: 0,
+            }, limit);
+        let urls = urlField.data;
+        if (urls && urls.length === 0) {
+            const urlFieldFailure = await ctx.service.dbService.find(
+                [
+                    'id', 'url',
+                ], {
+                    state: 2,
+                }, limit);
+            urls = urlFieldFailure.data;
         }
-        ctx.helper.log('GRAB PAGE RESULT', 'amount : ' + amount, 'successed : ' + data.successed, 'failed : ' + data.failed);
-        return { data };
+        if (urls && urls.length > 0) {
+            ctx.helper.log('PAGE GRAB From:' + JSON.stringify(urls));
+            const amount = urls.length;
+            const result = urls.map((fObj, i) => {
+                return new Promise(async (res, rej) => {
+                    try {
+                        const page = await this.pageAdaptor(fObj.url);
+                        const data = page.data;
+                        if (data && data.content && data.hash) {
+                            const fileWrite = await ctx.helper.contentFile(data.hash, page);
+                            if (fileWrite) {
+                                const updates = await ctx.service.dbService.update({
+                                    state: 1,
+                                }, {
+                                        id: fObj.id
+                                    });
+                                if (updates.data) {
+                                    const createTime = Math.floor(new Date().getTime() / 1000);
+                                    const insert = await ctx.service.dbService.insert({
+                                        urlId: fObj.id, contentHash: data.hash, createTime
+                                    }, 'page_pool');
+                                    if (insert.data) {
+                                        res(true);
+                                    }
+                                }
+                            } else {
+                                await ctx.service.dbService.update({
+                                    state: 2,
+                                }, {
+                                        id: fObj.id
+                                    });
+                            }
+                        } else {
+                            await ctx.service.dbService.update({
+                                state: 2,
+                            }, {
+                                    id: fObj.id
+                                });
+                        }
+                    } catch (e) {
+                        await ctx.service.dbService.update({
+                            state: 2,
+                        }, {
+                                id: fObj.id
+                            });
+                        ctx.helper.error('Page Writing ' + fObj.url + ' Error : \n' + e.toString());
+                    }
+                    res(false);
+                });
+            });
+
+            const successed = await this.pageStatis(result);
+            const data = {
+                successed,
+                failed: amount - successed
+            }
+            ctx.helper.log('GRAB PAGE RESULT', 'amount : ' + amount, 'successed : ' + data.successed, 'failed : ' + data.failed);
+            return { data };
+        } else {
+            ctx.helper.log('NO PAGES!');
+            return {
+                data: {
+                    successed: 0,
+                    failed: 0
+                }
+            };
+        }
     }
 }
 module.exports = GrabService;
