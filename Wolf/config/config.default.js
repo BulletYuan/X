@@ -49,6 +49,18 @@ module.exports = appInfo => {
     agent: false,
   };
 
+  //mongo
+  config.mongo = {
+    client: {
+      host: "127.0.0.1",
+      port: "27017",
+      name: "wolf",
+      user: "",
+      password: "",
+      options: {},
+    }
+  };
+
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',
