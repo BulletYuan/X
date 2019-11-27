@@ -82,7 +82,7 @@ module.exports = {
       data.time = 0;
     }
     return Object.assign(
-      { url: '', topic: '', digest: '', thumb: '', keywords: '', time: 0 },
+      { url: '', topic: '', digest: '', thumb: '', keywords: '', time: 0, state: 0, createTime: Math.floor(new Date().getTime() / 1000) },
       data);
   },
   pageAssign(data) {

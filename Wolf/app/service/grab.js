@@ -27,7 +27,8 @@ class GrabService extends Service {
         const { ctx } = this;
         if (Object.prototype.toString.call(datas).indexOf('Object') >= 0 && datas.data && datas.data.length > 0) {
             return await ctx.helper.queue(datas.data, async (data) => {
-                return await ctx.service.dbService.insert(data)
+                return await ctx.service.mongoService.insert(data);    // mongodb
+                // return await ctx.service.dbService.insert(data)  // mysql
             });
         }
     }
@@ -35,15 +36,16 @@ class GrabService extends Service {
     async Urls() {
         const { ctx } = this;
         ctx.helper.log('GRAB URL BEGIN');
+        let amount = 0;
+        const result = [];
+
         const {
             city,
         } = await ctx.service.ip.ip(); // done
-        const result = [];
-        let amount = 0;
         const bendibao = await ctx.service.bendibao.news(city); // done
 
         const news163Ranks = await ctx.service.news163.ranks(); // done
-        const ifentRanks = await ctx.service.ifeng.ranks(); // done
+        const ifengRanks = await ctx.service.ifeng.ranks(); // done
 
         const cctvNews = await ctx.service.cctv.newest(); // done
         const news163News = await ctx.service.news163.newest(); // done
@@ -58,7 +60,7 @@ class GrabService extends Service {
         const chinanewsWorld = await ctx.service.chinanews.world(); // done
         const chinanewsDomestic = await ctx.service.chinanews.domestic(); // done
 
-        amount += ifentRanks.data.length;
+        amount += ifengRanks.data.length;
         amount += bendibao.data.length;
         amount += news163Ranks.data.length;
         amount += cctvNews.data.length;
@@ -73,7 +75,7 @@ class GrabService extends Service {
         amount += chinanewsWorld.data.length;
         amount += chinanewsDomestic.data.length;
 
-        ctx.helper.log('ifengRanks', ifentRanks.data ? ifentRanks.data.length : 0);
+        ctx.helper.log('ifengRanks', ifengRanks.data ? ifengRanks.data.length : 0);
         ctx.helper.log('bendibao', bendibao.data ? bendibao.data.length : 0);
         ctx.helper.log('news163Ranks', news163Ranks.data ? news163Ranks.data.length : 0);
         ctx.helper.log('cctvNews', cctvNews.data ? cctvNews.data.length : 0);
@@ -88,9 +90,9 @@ class GrabService extends Service {
         ctx.helper.log('chinanewsWorld', chinanewsWorld.data ? chinanewsWorld.data.length : 0);
         ctx.helper.log('chinanewsDomestic', chinanewsDomestic.data ? chinanewsDomestic.data.length : 0);
 
+        result.push(this.datasInsert(ifengRanks));
         result.push(this.datasInsert(bendibao));
         result.push(this.datasInsert(news163Ranks));
-        result.push(this.datasInsert(ifentRanks));
         result.push(this.datasInsert(cctvNews));
         result.push(this.datasInsert(news163News));
         result.push(this.datasInsert(haiwainetNews));
@@ -122,7 +124,8 @@ class GrabService extends Service {
         const { ctx } = this;
         if (Object.prototype.toString.call(datas).indexOf('Object') >= 0 && datas.data && datas.data.length > 0) {
             return await ctx.helper.queue(datas.data, async (data) => {
-                return await ctx.service.dbService.insert(data)
+                return await ctx.service.mongoService.insert(data);    // mongodb
+                // return await ctx.service.dbService.insert(data);    // mysql
             });
         }
     }
@@ -155,7 +158,7 @@ class GrabService extends Service {
         const { ctx } = this;
         ctx.helper.log('GRAB PAGE BEGIN');
         const limit = 30;
-        const urlField = await ctx.service.dbService.find(
+        const urlField = await ctx.service.mongoService.find(
             [
                 'id', 'url',
             ], {
@@ -163,7 +166,7 @@ class GrabService extends Service {
             }, limit);
         let urls = urlField.data;
         if (urls && urls.length === 0) {
-            const urlFieldFailure = await ctx.service.dbService.find(
+            const urlFieldFailure = await ctx.service.mongoService.find(
                 [
                     'id', 'url',
                 ], {
@@ -180,6 +183,18 @@ class GrabService extends Service {
                         const page = await this.pageAdaptor(fObj.url);
                         const data = page.data;
                         if (data && data.content && data.hash) {
+                            const contentCreateTime = Math.floor(new Date().getTime() / 1000);
+                            const updates = await ctx.service.mongoService.update({
+                                state: 1, content: data.content, contentHash: data.hash,
+                                contentCreateTime,
+                            }, {
+                                    _id: fObj._id
+                                });
+                            if (updates.data) {
+                                res(true);
+                            }
+                            /* 
+                            // older mysql page saving
                             const fileWrite = await ctx.helper.contentFile(data.hash, page);
                             if (fileWrite) {
                                 const updates = await ctx.service.dbService.update({
@@ -203,15 +218,17 @@ class GrabService extends Service {
                                         id: fObj.id
                                     });
                             }
+                            */
                         } else {
-                            await ctx.service.dbService.update({
+                            await ctx.service.mongoService.update({
                                 state: 2,
                             }, {
                                     id: fObj.id
                                 });
+                            res(false);
                         }
                     } catch (e) {
-                        await ctx.service.dbService.update({
+                        await ctx.service.mongoService.update({
                             state: 2,
                         }, {
                                 id: fObj.id

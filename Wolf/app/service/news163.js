@@ -23,16 +23,18 @@ class News163Service extends Service {
       for (let j = 0; j < 10; j++) {
         const item = j < 3 ? red[3 * i + j] : gray[7 * i + (j - 3)];
         // const no = Number(item.match(/\<span\>(.*)\<\/span\>/gi)[0].replace(/span\>/g, '').replace(/\</g, '').replace('\/', ''));
-        const _con = item.match(/href\=\"(.*?)\<\/a/gi)[0].replace(/\'/g, '\"');
-        const url = _con.match(/\"(.*?)\"/gi)[0].replace(/\"/g, '');
-        const topic = _con.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
-        // let watch = counts[j];
-        // watch = watch.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
-        data.push(ctx.helper.dataAssign({
-          // no,
-          // watch,
-          url, topic,
-        }));
+        if (item) {
+          const _con = item.match(/href\=\"(.*?)\<\/a/gi)[0].replace(/\'/g, '\"');
+          const url = _con.match(/\"(.*?)\"/gi)[0].replace(/\"/g, '');
+          const topic = _con.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
+          // let watch = counts[j];
+          // watch = watch.match(/\>(.*?)\</gi)[0].replace(/\>/g, '').replace(/\</g, '');
+          data.push(ctx.helper.dataAssign({
+            // no,
+            // watch,
+            url, topic,
+          }));
+        }
       }
     }
     return {

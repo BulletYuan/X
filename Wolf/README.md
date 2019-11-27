@@ -1,33 +1,41 @@
 # Wolf
 
+* Backend : EggJS
 
+* DB : Mysql / MongoDB
 
-## QuickStart
-
-<!-- add docs here for user -->
-
-see [egg docs][egg] for more detail.
-
-### Development
+## Install Mongo
 
 ```bash
-$ npm i
-$ npm run dev
-$ open http://localhost:7001/
+curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-4.0.0.tgz
+tar -zxvf mongodb-linux-x86_64-4.0.0.tgz
+mv  mongodb-linux-x86_64-4.0.0/ /usr/local/mongodb
 ```
 
-### Deploy
+## Create DB Directory && Logs File
 
 ```bash
-$ npm start
-$ npm stop
+mkdir -p /usr/mongodb/db
+mkdir -p /usr/mongodb/logs/mongodb.log
+cd /usr/mongodb && chmod -Rf 777
 ```
 
-### npm scripts
+## Create Configuration File
 
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
+```bash
+nano /usr/local/mongodb/bin/mongodb.conf
 
+port=27017
+dbpath=/usr/mongodb/db
+logpath=/usr/mongodb/logs/mongodb.log
+logappend=true
+fork=true
+maxConns=100
+#auth=true
+```
 
-[egg]: https://eggjs.org
+## Run Mongodb Service Daemon
+
+```bash
+mongod -f /usr/local/mongodb/bin/mongodb.conf
+```

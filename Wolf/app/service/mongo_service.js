@@ -1,10 +1,12 @@
 const Service = require('egg').Service;
 
 class MongoService extends Service {
-    async find(query = { state: 0 }, limit = 10) {
+    async find(alians = [
+        `id`, `url`, `topic`, `digest`, `thumb`, `keywords`, `time`
+    ], query = { state: 0 }, limit = 10, sort = { 'createTime': 1 }) {
         const { app } = this;
         const data = await app.mongo.find('wolf', {
-            query, limit
+            query, limit, sort
         });
         return { data };
     }

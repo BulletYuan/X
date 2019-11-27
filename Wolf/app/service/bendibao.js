@@ -14,13 +14,16 @@ class BendibaoService extends Service {
     });
     const content = result.data;
     const list = content.match(/http\:(.*)\<\/a/gi);
-    const data = list.map(el => {
-      el = el.replace(/\<\/a/g, '').replace(/\"/g, '').split('>');
-      return {
-        url: el[0],
-        city: el[1],
-      };
-    });
+    let data = [];
+    if (list) {
+      data = list.map(el => {
+        el = el.replace(/\<\/a/g, '').replace(/\"/g, '').split('>');
+        return {
+          url: el[0],
+          city: el[1],
+        };
+      });
+    }
     return {
       data,
     };

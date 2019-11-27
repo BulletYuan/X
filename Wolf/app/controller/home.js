@@ -68,19 +68,18 @@ class HomeController extends Controller {
     // const data = await ctx.service.ifeng.newsPage('https://news.ifeng.com/c/7rP4sebFw4D'); // done
     // const data = await ctx.service.news163.newsPage('https://news.163.com/19/1107/01/ETBI599P0001875P.html'); // done
 
-    // const data = await ctx.service.grab.Page(); // done
+    const data = await ctx.service.grab.Page(); // done
 
 
-    const data = await ctx.service.mongoService.find(); // done
+    // const data = await ctx.service.mongoService.find(); // done
     // const data = await ctx.service.mongoService.insert({ url: 'test', time: 100, topic: 'test', state: 0 }); // done
-    // const data = await ctx.service.mongoService.insertArray([ // done
-    //   { url: 'test', time: 100, topic: 'test', state: 0 },
-    //   { url: 'test1', time: 100, topic: 'test1', state: 0 },
-    //   { url: 'test2', time: 1003, topic: 'test2', state: 1 },
-    //   { url: 'test3', time: 1003, topic: 'test3', state: 2 }
-    // ]);
-    // const data = await ctx.service.mongoService.update( // done
-    //   { state: 1 }, { url: 'test' });
+    // const data = await ctx.service.mongoService.insertArray([
+    //   { url: 'test234', time: 1010, topic: 'test234', state: 0 },
+    //   { url: 'test2345', time: 1020, topic: 'test1', state: 0 },
+    //   { url: 'test2342', time: 1003, topic: 'test2345', state: 0 },
+    //   { url: 'test2341', time: 1003, topic: 'test3', state: 0 }
+    // ]); // done
+    // const data = await ctx.service.mongoService.update({ url: 'test2345' },{ state: 1 }); // done
 
     const res = ctx.helper.response(data.status, data.headers, data.data);
     ctx.body = ctx.helper.responseData(res.body);
