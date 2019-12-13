@@ -9,7 +9,7 @@ import router
 
 def main():
     app = tornado.web.Application(
-        router
+        router.routes
     )
     app.listen(config['port'])
     tornado.ioloop.IOLoop.current().start()
