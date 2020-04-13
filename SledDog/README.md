@@ -1,4 +1,4 @@
-# sleddog
+# sled-dog
 
 ## Project setup
 ```
