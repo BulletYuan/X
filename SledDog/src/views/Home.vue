@@ -1,18 +1,26 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <SideList width="250" top="0" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { Component, Vue } from "vue-property-decorator";
+import SideList from "@/components/SideList.vue";
 
-export default {
-  name: 'Home',
+@Component({
+  name: "Home",
   components: {
-    HelloWorld
+    SideList
   }
-}
+})
+export default class Home extends Vue {}
 </script>
+<style lang="scss" scoped>
+.home {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
