@@ -1,0 +1,46 @@
+{
+  "page": {
+    "baseHtml": "<!doctype html><html {language}><head>{title}{meta}{icon}</head><body></body></html>",
+    "title": "Sled Dog",
+    "language": [
+      "zh"
+    ],
+    "meta": [
+      {
+        "charset": "utf-8"
+      },
+      {
+        "http-equiv": "X-UA-Compatible",
+        "content": "IE=edge,chrome=1"
+      },
+      {
+        "name": "viewport",
+        "content": "width=device-width,initial-scale=1.0"
+      }
+    ],
+    "icon": "./assets/favicon.ico"
+  },
+  "components": [
+    {
+      "label": "容器组件",
+      "name": "layout",
+      "children": [
+        {
+          "label": "基础布局",
+          "name": "base",
+          "resource": "./layout/base.json"
+        },
+        {
+          "label": "弹性布局",
+          "name": "flex",
+          "resource": "./layout/flex.json"
+        },
+        {
+          "label": "栅格布局",
+          "name": "grid",
+          "resource": "./layout/grid.json"
+        }
+      ]
+    }
+  ]
+}

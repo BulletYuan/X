@@ -1,7 +1,7 @@
 {
-  "label": "layout-flex",
+  "label": "layout-base",
   "value": 10,
-  "baseHtml": "<div class=\"layout-flex\"></div>",
+  "baseHtml": "<div class=\"layout-base\"></div>",
   "content": {
     "html": "",
     "components": []
@@ -11,78 +11,6 @@
       "label": "布局属性",
       "type": "container",
       "value":[
-        {
-          "label": "水平布局",
-          "type": "select",
-          "value": [
-            {
-              "label": "水平居左",
-              "name": "flex-item-start",
-              "value": "flex-item-start",
-              "htmlArea": "class"
-            },
-            {
-              "label": "水平居中",
-              "name": "flex-item-center",
-              "value": "flex-item-center",
-              "htmlArea": "class"
-            },
-            {
-              "label": "水平居右",
-              "name": "flex-item-right",
-              "value": "flex-item-right",
-              "htmlArea": "class"
-            },
-            {
-              "label": "分隔两端",
-              "name": "flex-item-between",
-              "value": "flex-item-between",
-              "htmlArea": "class"
-            },
-            {
-              "label": "中心扩散",
-              "name": "flex-item-around",
-              "value": "flex-item-around",
-              "htmlArea": "class"
-            }
-          ]
-        },
-        {
-          "label": "垂直布局",
-          "type": "select",
-          "value": [
-            {
-              "label": "垂直居上",
-              "name": "align-item-start",
-              "value": "align-item-start",
-              "htmlArea": "class"
-            },
-            {
-              "label": "垂直居中",
-              "name": "align-item-center",
-              "value": "align-item-center",
-              "htmlArea": "class"
-            },
-            {
-              "label": "垂直居下",
-              "name": "align-item-right",
-              "value": "align-item-right",
-              "htmlArea": "class"
-            },
-            {
-              "label": "字符基线对齐",
-              "name": "align-item-baseline",
-              "value": "align-item-baseline",
-              "htmlArea": "class"
-            },
-            {
-              "label": "伸展对齐",
-              "name": "align-item-stretch",
-              "value": "align-item-stretch",
-              "htmlArea": "class"
-            }
-          ]
-        },
         {
           "label": "行内布局",
           "type": "select",
