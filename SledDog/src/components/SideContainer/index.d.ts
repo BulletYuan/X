@@ -1,6 +1,6 @@
 export interface SideItem {
   label: string,
-  value: number,
+  value: string,
   component: any,
   isParent?: boolean,
   isActive?: boolean,

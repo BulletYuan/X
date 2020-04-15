@@ -4,11 +4,13 @@
       v-for="(sideItem,index) in options"
       :key="sideItem.value"
       :data-item="sideItem"
-      :draggable="!sideItem.isParent"
       :class="{'active':sideItem.isParent&&activeList[index]}"
     >
       <p
-      @click="itemClick(sideItem,index)">
+        @click="itemClick(sideItem,index)"
+        :draggable="!sideItem.isParent"
+        @dragstart="dragstart($event,sideItem)"
+      >
         <span
           :class="{'arrow':sideItem.isParent, 'fa':true, 'fa-ellipsis-v':!sideItem.isParent,'fa-caret-right':sideItem.isParent}"
         ></span>
@@ -39,6 +41,12 @@ export default class SideList extends Vue {
   beforeUpdate() {
     if (this.options && this.options.length !== this.activeList.length) {
       this.activeList = new Array(this.options.length).fill(false);
+    }
+  }
+
+  dragstart(e: any, sideItem: SideItem) {
+    if (e && e.dataTransfer) {
+      e.dataTransfer.setData("component", JSON.stringify(sideItem));
     }
   }
 

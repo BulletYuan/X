@@ -1,7 +1,9 @@
 {
-  "label": "layout-grid",
+  "label": "layout-flex",
+  "name": "layout-flex",
   "value": 10,
-  "baseHtml": "<div class=\"layout-grid\"></div>",
+  "element": "DIV",
+  "baseHtml": "<div class=\"layout-flex\"></div>",
   "content": {
     "html": "",
     "components": []
@@ -10,88 +12,78 @@
     "layout": {
       "label": "布局属性",
       "type": "container",
-      "value":[
+      "value": [
         {
-          "label": "容器对齐",
+          "label": "水平布局",
           "type": "select",
-          "value":[
+          "value": [
             {
-              "label": "居左对齐",
-              "name": "grid-con-start",
-              "value": "grid-con-start",
+              "label": "水平居左",
+              "name": "flex-col-start",
+              "value": "flex-col-start",
               "htmlArea": "class"
             },
             {
-              "label": "居中对齐",
-              "name": "grid-con-center",
-              "value": "grid-con-center",
+              "label": "水平居中",
+              "name": "flex-col-center",
+              "value": "flex-col-center",
               "htmlArea": "class"
             },
             {
-              "label": "居右对齐",
-              "name": "grid-con-end",
-              "value": "grid-con-end",
+              "label": "水平居右",
+              "name": "flex-col-right",
+              "value": "flex-col-right",
               "htmlArea": "class"
             },
             {
-              "label": "两端对齐",
-              "name": "grid-con-between",
-              "value": "grid-con-between",
+              "label": "分隔两端",
+              "name": "flex-col-between",
+              "value": "flex-col-between",
               "htmlArea": "class"
             },
             {
-              "label": "中心围绕",
-              "name": "grid-con-around",
-              "value": "grid-con-around",
-              "htmlArea": "class"
-            },
-            {
-              "label": "伸展对齐",
-              "name": "grid-con-stretch",
-              "value": "grid-con-stretch",
+              "label": "中心扩散",
+              "name": "flex-col-around",
+              "value": "flex-col-around",
               "htmlArea": "class"
             }
           ]
         },
         {
-          "label": "内容对齐",
+          "label": "垂直布局",
           "type": "select",
-          "value":[
+          "value": [
             {
-              "label": "居左对齐",
-              "name": "grid-item-start",
-              "value": "grid-item-start",
+              "label": "垂直居上",
+              "name": "flex-row-start",
+              "value": "flex-row-start",
               "htmlArea": "class"
             },
             {
-              "label": "居中对齐",
-              "name": "grid-item-center",
-              "value": "grid-item-center",
+              "label": "垂直居中",
+              "name": "flex-row-center",
+              "value": "flex-row-center",
               "htmlArea": "class"
             },
             {
-              "label": "居右对齐",
-              "name": "grid-item-end",
-              "value": "grid-item-end",
+              "label": "垂直居下",
+              "name": "flex-row-right",
+              "value": "flex-row-right",
+              "htmlArea": "class"
+            },
+            {
+              "label": "字符基线对齐",
+              "name": "flex-row-baseline",
+              "value": "flex-row-baseline",
               "htmlArea": "class"
             },
             {
               "label": "伸展对齐",
-              "name": "grid-item-stretch",
-              "value": "grid-item-stretch",
+              "name": "flex-row-stretch",
+              "value": "flex-row-stretch",
               "htmlArea": "class"
             }
           ]
-        },
-        {
-          "label": "列间隔",
-          "type": "input-number",
-          "regex":"\\d"
-        },
-        {
-          "label": "行间隔",
-          "type": "input-number",
-          "regex":"\\d"
         },
         {
           "label": "行内布局",
@@ -113,6 +105,24 @@
               "label": "居右",
               "name": "text-right",
               "value": "text-right",
+              "htmlArea": "class"
+            }
+          ]
+        },
+        {
+          "label": "悬浮",
+          "type": "select",
+          "value": [
+            {
+              "label": "居左",
+              "name": "float-left",
+              "value": "float-left",
+              "htmlArea": "class"
+            },
+            {
+              "label": "居右",
+              "name": "float-right",
+              "value": "float-right",
               "htmlArea": "class"
             }
           ]

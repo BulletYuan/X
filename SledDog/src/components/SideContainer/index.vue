@@ -28,51 +28,9 @@ export default class SideContainer extends Vue {
   max-width: 250px;
   height: 100%;
   background: #1b1719;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  ul {
-    width: 100%;
-    height: 0;
-    overflow: hidden;
-    &.active {
-      height: auto;
-    }
-  }
-  li {
-    width: 100%;
-    border-bottom: 1px #464545 solid;
-    &.active > p {
-      color: #ec0097;
-      & span.arrow {
-        transform: rotateZ(0deg);
-      }
-    }
-    & p {
-      padding: 10px;
-      cursor: pointer;
-      color: #fafafa;
-      transition: all 0.4s;
-      &:hover {
-        color: #ec0097;
-      }
-      & span {
-        margin-right: 10px;
-        &.arrow {
-          transform: rotateZ(-90deg);
-        }
-      }
-    }
-    &[class~="child"] {
-      padding-left: 10px;
-      &:last-child {
-        border-bottom: none;
-      }
-      &:first-child {
-        border-top: 1px #464545 solid;
-      }
-    }
-  }
+  // position: fixed;
+  // top: 0;
+  // left: 0;
+  // z-index: 1;
 }
 </style>

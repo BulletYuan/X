@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="main-container">
-    <router-view></router-view>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -13,7 +13,8 @@ export default class App extends Vue {}
 </script>
 
 <style lang="scss">
-@import "./assets/scss/font-awesome";
+@import "./assets/scss/font-icon/font-awesome";
+@import "./assets/scss/base";
 * {
   margin: 0;
   padding: 0;
@@ -22,13 +23,15 @@ export default class App extends Vue {}
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-a{
+a {
   text-decoration: none;
 }
-ul,li,ol{
+ul,
+li,
+ol {
   list-style: none;
 }
-.main-container{
+.main-container {
   width: 100%;
   height: 100%;
   overflow: hidden;

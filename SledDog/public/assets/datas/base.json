@@ -18,7 +18,7 @@
         "content": "width=device-width,initial-scale=1.0"
       }
     ],
-    "icon": "./assets/favicon.ico"
+    "icon": "/assets/favicon.ico"
   },
   "components": [
     {
@@ -28,17 +28,17 @@
         {
           "label": "基础布局",
           "name": "base",
-          "resource": "./layout/base.json"
+          "resource": "/assets/datas/layout/base.json"
         },
         {
           "label": "弹性布局",
           "name": "flex",
-          "resource": "./layout/flex.json"
+          "resource": "/assets/datas/layout/flex.json"
         },
         {
           "label": "栅格布局",
           "name": "grid",
-          "resource": "./layout/grid.json"
+          "resource": "/assets/datas/layout/grid.json"
         }
       ]
     }
