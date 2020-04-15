@@ -1,47 +1,24 @@
 <template>
   <div class="side-list" :style="{'width':(width||250)+'px','top':(top||0)+'px'}">
-    <ul class="active">
-      <li class="active">
-        <p>1</p>
-      </li>
-      <li>
-        <p>2</p>
-        <ul class="active">
-          <li class="child">
-            <p>2.1</p>
-          </li>
-          <li class="child">
-            <p>2.2</p>
-          </li>
-          <li class="child">
-            <p>2.3</p>
-            <ul class="active">
-              <li class="child">
-                <p>2.3.1</p>
-              </li>
-              <li class="child">
-                <p>2.3.2</p>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <p>3</p>
-      </li>
-    </ul>
+    <SideList :options="options" :isActive="true" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import SideList from "./SideList.vue";
+import { SideItem } from "./index.d";
 
 @Component({
-  name: "SideList"
+  name: "SideContainer",
+  components: {
+    SideList
+  }
 })
-export default class SideList extends Vue {
+export default class SideContainer extends Vue {
   @Prop() private width?: number;
   @Prop() private top?: number;
+  @Prop() private options?: SideItem[];
 }
 </script>
 
@@ -66,16 +43,25 @@ export default class SideList extends Vue {
   li {
     width: 100%;
     border-bottom: 1px #464545 solid;
-    &.active p{
-        color: #ec0097;
+    &.active > p {
+      color: #ec0097;
+      & span.arrow {
+        transform: rotateZ(0deg);
+      }
     }
     & p {
       padding: 10px;
       cursor: pointer;
       color: #fafafa;
-      transition: all .4s;
+      transition: all 0.4s;
       &:hover {
         color: #ec0097;
+      }
+      & span {
+        margin-right: 10px;
+        &.arrow {
+          transform: rotateZ(-90deg);
+        }
       }
     }
     &[class~="child"] {
