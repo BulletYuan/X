@@ -1,8 +1,7 @@
 {
   "label": "layout-grid",
   "name": "layout-grid",
-  "value": 10,
-  "element": "DIV",
+  "element": "div",
   "baseHtml": "<div class=\"layout-grid\"></div>",
   "content": {
     "html": "",

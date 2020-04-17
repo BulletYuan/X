@@ -1,8 +1,7 @@
 {
   "label": "layout-base",
   "name": "layout-base",
-  "value": 10,
-  "element": "DIV",
+  "element": "div",
   "baseHtml": "<div class=\"layout-base\"></div>",
   "content": {
     "html": "",

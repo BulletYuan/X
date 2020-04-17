@@ -1,8 +1,7 @@
 {
   "label": "layout-flex",
   "name": "layout-flex",
-  "value": 10,
-  "element": "DIV",
+  "element": "div",
   "baseHtml": "<div class=\"layout-flex\"></div>",
   "content": {
     "html": "",
