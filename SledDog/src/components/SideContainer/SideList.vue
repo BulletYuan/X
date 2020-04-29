@@ -46,7 +46,8 @@ export default class SideList extends Vue {
 
   dragstart(e: any, sideItem: SideItem) {
     if (e && e.dataTransfer) {
-      e.dataTransfer.setData("component", JSON.stringify(sideItem));
+      // e.dataTransfer.setData("component", JSON.stringify(sideItem));
+      e.dataTransfer.setData("cpt-url", sideItem.label);
     }
   }
 
