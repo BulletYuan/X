@@ -1,0 +1,23 @@
+{
+    "name": "bullet-penguin",
+    "version": "1.0.1",
+    "description": "",
+    "main": "index.js",
+    "dependencies": {
+        "bullettool": "^3.1.3"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "start": "node index.js"
+    },
+    "keywords": [
+        "Penguin",
+        "Koa"
+    ],
+    "author": "",
+    "license": "ISC",
+    "engines": {
+        "node": "10.15.x",
+        "npm": "6.4.x"
+    }
+}
