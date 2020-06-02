@@ -133,6 +133,7 @@ Generation.prototype.generateObj = function (parentPath = './', folderObj = {}) 
 }
 Generation.prototype.init = async function () {
     const koa = await this.checkingNpm('koa');
+    const static = await this.checkingNpm('koa-static');
     let [cors, route, bodyparser] = [{}, {}, {}];
     if (this.param_values.cors) {
         cors = await this.checkingNpm('koa-cors');
@@ -143,7 +144,7 @@ Generation.prototype.init = async function () {
     if (this.param_values.bodyparser) {
         bodyparser = await this.checkingNpm('koa-bodyparser');
     }
-    const deps = Object.assign({}, koa, cors, route, bodyparser);
+    const deps = Object.assign({}, koa, static, cors, route, bodyparser);
     const folderObj = folderInit(this.param_values.name, this.param_values.port, deps);
     const rootPath = path.join(cwd_path, this.param_values.name);
     const hasRoot = this.generateFoler(rootPath);

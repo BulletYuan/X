@@ -65,15 +65,19 @@ const router_configFn = () => {
 }
 const entry_configFn = (port = '3000', dependencies = {}) => {
     const base_use =
-        `app.use(async ctx => {
+        `app.use(static(staticPath));
+app.use(async ctx => {
     ctx.body = 'Hello World';
 });`;
     const entry_config = {
         deps: [
-            `const Koa = require('koa');`,
+            `const path = require('path');\n
+const Koa = require('koa');
+const static=require('koa-static');`,
         ],
         init: [
-            `const app = new Koa();
+            `const staticPath=path.join(__dirname,'public','dist');\n
+const app = new Koa();
 app.keys = ['Penguin-${new Date().getTime()}-Koa']`,
         ],
         uses: [],
@@ -154,6 +158,43 @@ module.exports = {
 
     return router_folder_config;
 }
+const public_configFn = (name) => {
+    const index_html_content =
+        `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="white"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <title>${name}</title>
+</head>
+
+<body>
+    <h1>Hi, ${name} by Penguin Cli</h1>
+</body>
+
+</html>
+    `;
+    const public_config = {
+        'dist': {
+            type: 'dir',
+            children: {
+                'index': {
+                    type: 'html',
+                    content: index_html_content,
+                }
+            },
+        }
+    };
+    return public_config;
+}
 const folder_configFn = (name, port, dependencies) => {
     const folder_config = {
         'app': {
@@ -181,11 +222,15 @@ const folder_configFn = (name, port, dependencies) => {
     folder_config.package.content = JSON.stringify(package_config);
 
     if (dependencies['koa-router']) {
-        const router_folder_config = router_folder_configFn(name);
+        const router_folder_config = router_folder_configFn();
         let childrenObj = folder_config.app.children;
         childrenObj = Object.assign(childrenObj, router_folder_config);
         folder_config.app.children = childrenObj;
     }
+
+    const public_config = public_configFn(name);
+    folder_config.public.children = public_config;
+
     return folder_config;
 }
 
