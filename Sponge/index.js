@@ -5,7 +5,9 @@ if (typeof require !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = Intent;
+  module.exports = {
+    Intent
+  };
   // module.exports = {
   //   Intent,
   //   Cache,

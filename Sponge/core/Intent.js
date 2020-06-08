@@ -46,7 +46,7 @@ Sponge.prototype.ObjectStringify = function (obj, append = {}) {
   }
 }
 
-Sponge.prototype.Publish = function (key, state) {
+Sponge.prototype.Do = function (key, state) {
   const _t = Object.prototype.toString.call(key).indexOf('Array') > 0 ? 1 : 0;
   const _tv = Object.prototype.toString.call(state).indexOf('Array') > 0 ? 1 : 0;
   const _taskRun = (k, state) => {
@@ -85,7 +85,7 @@ Sponge.prototype.Publish = function (key, state) {
     return null;
   }
 };
-Sponge.prototype.Subscribe = function (key, done = res => res, error = err => err, complate = () => { }) {
+Sponge.prototype.Observer = function (key, done = res => res, error = err => err, complate = () => { }) {
   if (typeof this.Storage[key] === 'undefined') {
     this.Storage[key] = [];
   }
