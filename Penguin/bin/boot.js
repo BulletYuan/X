@@ -52,6 +52,25 @@ const bodyparser_configFn = () => {
         ],
     }
 }
+const fileupload_configFn = () => {
+    return {
+        deps: [
+            `const koaBody = require('koa-body');`,
+        ],
+        init: [],
+        uses: [
+            `
+app.use(koaBody({
+    multipart: true,                    // allow mutiple files
+    urlencoded: true,                   // allow encoded content
+    formidable:{
+        uploadDir: './public/upload',   // upload dir
+        maxFileSies: 20 * 1024 * 1024,  // MAX 20MB
+    }
+}));`
+        ],
+    }
+}
 const router_configFn = () => {
     return {
         deps: [],
@@ -65,7 +84,7 @@ const router_configFn = () => {
 }
 const entry_configFn = (port = '3000', dependencies = {}) => {
     const base_use =
-        `app.use(static(staticPath));
+        `
 app.use(async ctx => {
     ctx.body = 'Hello World';
 });`;
@@ -80,7 +99,9 @@ const static=require('koa-static');`,
 const app = new Koa();
 app.keys = ['Penguin-${new Date().getTime()}-Koa']`,
         ],
-        uses: [],
+        uses: [
+            `app.use(static(staticPath));\n`
+        ],
         port: [
             `const port = ${port};
 app.listen(port);
@@ -103,6 +124,11 @@ console.log('app started at port ' + port + '...');`
         entry_config.deps.push(...bodyparser_configFn().deps);
         entry_config.init.push(...bodyparser_configFn().init);
         entry_config.uses.push(...bodyparser_configFn().uses);
+    }
+    if (dependencies['koa-body']) {
+        entry_config.deps.push(...fileupload_configFn().deps);
+        entry_config.init.push(...fileupload_configFn().init);
+        entry_config.uses.push(...fileupload_configFn().uses);
     }
     return entry_config;
 };
@@ -191,7 +217,21 @@ const public_configFn = (name) => {
                     content: index_html_content,
                 }
             },
-        }
+        },
+    };
+    return public_config;
+}
+const fileupload_folder_configFn = () => {
+    const public_config = {
+        'upload': {
+            type: 'dir',
+            children: {
+                'README': {
+                    type: 'md',
+                    content: `# this is uploaded folder`,
+                }
+            },
+        },
     };
     return public_config;
 }
@@ -228,7 +268,11 @@ const folder_configFn = (name, port, dependencies) => {
         folder_config.app.children = childrenObj;
     }
 
-    const public_config = public_configFn(name);
+    let public_config = public_configFn(name);
+    if (dependencies['koa-body']) {
+        const fileupload_folder_config = fileupload_folder_configFn();
+        public_config = Object.assign(public_config, fileupload_folder_config);
+    }
     folder_config.public.children = public_config;
 
     return folder_config;

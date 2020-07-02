@@ -59,11 +59,19 @@ const params_config = [
         default: 'n',
         chooses: ['y', 'n'],
         regx: /y|n/gi,
+    },
+    {
+        value: 'fileupload',
+        asking: 'Do you want the File-Upload module in Koa? Input [${chooses}],  default:${default}\n',
+        desc: 'input the [${chooses}] to confirming if you need File-Upload. default:${default}\n',
+        default: 'n',
+        chooses: ['y', 'n'],
+        regx: /y|n/gi,
     }
 ];
 
 function Generation(param_values = {}) {
-    this.param_values = Object.assign({ name: 'Penguin-Koa', port: '4004', route: false, cors: false, bodyparser: false }, param_values);
+    this.param_values = Object.assign({ name: 'Penguin-Koa', port: '4004', route: false, cors: false, bodyparser: false, fileupload: false }, param_values);
 }
 Generation.prototype.checkingNpm = function (packageName) {
     const result = {};
@@ -134,7 +142,7 @@ Generation.prototype.generateObj = function (parentPath = './', folderObj = {}) 
 Generation.prototype.init = async function () {
     const koa = await this.checkingNpm('koa');
     const static = await this.checkingNpm('koa-static');
-    let [cors, route, bodyparser] = [{}, {}, {}];
+    let [cors, route, bodyparser, fileupload] = [{}, {}, {}, {}];
     if (this.param_values.cors) {
         cors = await this.checkingNpm('koa-cors');
     }
@@ -144,13 +152,17 @@ Generation.prototype.init = async function () {
     if (this.param_values.bodyparser) {
         bodyparser = await this.checkingNpm('koa-bodyparser');
     }
-    const deps = Object.assign({}, koa, static, cors, route, bodyparser);
+    if (this.param_values.fileupload) {
+        fileupload = await this.checkingNpm('koa-body');
+    }
+    const deps = Object.assign({}, koa, static, cors, route, bodyparser, fileupload);
     const folderObj = folderInit(this.param_values.name, this.param_values.port, deps);
     const rootPath = path.join(cwd_path, this.param_values.name);
     const hasRoot = this.generateFoler(rootPath);
     if (hasRoot) {
         this.generateObj(rootPath, folderObj);
     }
+    exit();
 }
 
 function QA() {
@@ -193,10 +205,10 @@ QA.prototype.get = function (data) {
     this.next();
 }
 QA.prototype.generateSimple = function (name = 'Penguin-Koa-Simple') {
-    this.params_value = { name, port: '4004', route: false, cors: false, bodyparser: false };
+    this.params_value = { name, port: '4004', route: false, cors: false, bodyparser: false, fileupload: false };
 }
 QA.prototype.generateAdvanced = function (name = 'Penguin-Koa-Advanced') {
-    this.params_value = { name, port: '4004', route: true, cors: true, bodyparser: true };
+    this.params_value = { name, port: '4004', route: true, cors: true, bodyparser: true, fileupload: true };
 }
 QA.prototype.end = function () {
     stdin.removeAllListeners();
