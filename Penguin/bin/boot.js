@@ -64,7 +64,7 @@ app.use(koaBody({
     multipart: true,                    // allow mutiple files
     urlencoded: true,                   // allow encoded content
     formidable:{
-        uploadDir: './public/upload',   // upload dir
+        uploadDir: path.join(__dirname,'public','upload');,   // upload dir
         maxFileSies: 20 * 1024 * 1024,  // MAX 20MB
     }
 }));`
@@ -110,25 +110,26 @@ console.log('app started at port ' + port + '...');`
     }
     if (!dependencies['koa-router']) {
         entry_config.uses.push(base_use);
-    } else {
-        entry_config.deps.push(...router_configFn().deps);
-        entry_config.init.push(...router_configFn().init);
-        entry_config.uses.push(...router_configFn().uses);
     }
     if (dependencies['koa-cors']) {
         entry_config.deps.push(...cors_configFn().deps);
         entry_config.init.push(...cors_configFn().init);
         entry_config.uses.push(...cors_configFn().uses);
     }
+    if (dependencies['koa-body']) {
+        entry_config.deps.push(...fileupload_configFn().deps);
+        entry_config.init.push(...fileupload_configFn().init);
+        entry_config.uses.push(...fileupload_configFn().uses);
+    }
     if (dependencies['koa-bodyparser']) {
         entry_config.deps.push(...bodyparser_configFn().deps);
         entry_config.init.push(...bodyparser_configFn().init);
         entry_config.uses.push(...bodyparser_configFn().uses);
     }
-    if (dependencies['koa-body']) {
-        entry_config.deps.push(...fileupload_configFn().deps);
-        entry_config.init.push(...fileupload_configFn().init);
-        entry_config.uses.push(...fileupload_configFn().uses);
+    if (dependencies['koa-router']) {
+        entry_config.deps.push(...router_configFn().deps);
+        entry_config.init.push(...router_configFn().init);
+        entry_config.uses.push(...router_configFn().uses);
     }
     return entry_config;
 };
@@ -253,9 +254,9 @@ const folder_configFn = (name, port, dependencies) => {
             type: 'json',
             content: '',
         },
-        '.gitignore':{
-            type:'',
-            content:'node_modules\ndist'
+        '.gitignore': {
+            type: '',
+            content: 'node_modules\ndist'
         }
     };
     const entry_config = entry_configFn(port, dependencies);
