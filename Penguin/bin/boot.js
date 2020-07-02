@@ -253,6 +253,10 @@ const folder_configFn = (name, port, dependencies) => {
             type: 'json',
             content: '',
         },
+        '.gitignore':{
+            type:'',
+            content:'node_modules\ndist'
+        }
     };
     const entry_config = entry_configFn(port, dependencies);
     folder_config.index.content = Object.values(entry_config).map((el, i) => {

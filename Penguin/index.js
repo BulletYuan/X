@@ -124,10 +124,10 @@ Generation.prototype.generateObj = function (parentPath = './', folderObj = {}) 
     const folderKeys = Object.keys(folderObj);
     if (folderKeys.length === 0) { return false; }
     const initFolderConstruct = (k, v) => {
-        if (!v['type'] || v['type'] === 'dir') {
+        if (v['type'] === 'dir') {
             this.generateFoler(path.join(parentPath, k));
         } else {
-            this.generateFile(path.join(parentPath, k + '.' + v['type']), v['content']);
+            this.generateFile(path.join(parentPath, k + (v['type'] ? ('.' + v['type']) : '')), v['content']);
         }
         if (v['children'] && Object.keys(v['children']).length > 0) {
             const prevFolder = path.join(parentPath, k);
