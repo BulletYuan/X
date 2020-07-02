@@ -236,6 +236,41 @@ const fileupload_folder_configFn = () => {
     };
     return public_config;
 }
+const common_folder_configFn = () => {
+    const format_response = `
+// format response util
+const response = (data={},message='success',code=200) => {
+    return {
+        code,data,message,
+    };
+};
+
+// format response body util
+const formats = (ctx,type='application/json',data={}) => {
+    if(!ctx) return;
+    ctx.type=type;
+    ctx.body=response(data);
+}
+
+modules.exports={
+    response,
+    formats,
+}
+`;
+    const common_format_response_config = {
+        type: 'js',
+        content: format_response,
+    }
+    const common_folder_config = {
+        'common': {
+            type: 'dir',
+            children: {
+                'formatResponse': common_format_response_config,
+            }
+        }
+    };
+    return common_folder_config;
+}
 const folder_configFn = (name, port, dependencies) => {
     const folder_config = {
         'app': {
@@ -266,12 +301,14 @@ const folder_configFn = (name, port, dependencies) => {
     const package_config = package_configFn(name, dependencies);
     folder_config.package.content = JSON.stringify(package_config);
 
+    let folder_config_app_chd = {};
+    const common_folder_config = common_folder_configFn();
+    folder_config_app_chd = Object.assign(folder_config_app_chd, common_folder_config);
     if (dependencies['koa-router']) {
         const router_folder_config = router_folder_configFn();
-        let childrenObj = folder_config.app.children;
-        childrenObj = Object.assign(childrenObj, router_folder_config);
-        folder_config.app.children = childrenObj;
+        folder_config_app_chd = Object.assign(folder_config_app_chd, router_folder_config);
     }
+    folder_config.app.children = folder_config_app_chd;
 
     let public_config = public_configFn(name);
     if (dependencies['koa-body']) {
